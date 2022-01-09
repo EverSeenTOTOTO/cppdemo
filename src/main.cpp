@@ -1,19 +1,16 @@
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <string>
 
 #include "./type_list.h"
+#include "./constants.h"
 
 int main() {
-    std::cout << std::boolalpha;
+    std::cout << std::boolalpha << std::setprecision(20);
 
-    using Empty = TypeList<>;
-    using L1 = TypeList<int, char>;
-    using L2 = TypeList<char, long>;
-
-    using L = Concat<L1, L2>::type;
-
-    using Temp = RemoveDuplicate<L>::type;
+    std::cout << Eular << std::endl;
+    std::cout << PI << std::endl;
 
     return 0;
 }
