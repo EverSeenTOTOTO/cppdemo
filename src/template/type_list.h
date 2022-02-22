@@ -1,3 +1,5 @@
+#ifndef TYPE_LIST_H
+#define TYPE_LIST_H
 #include <type_traits>
 
 struct null_type {};
@@ -168,3 +170,5 @@ struct TypeList<> {
   using first = null_type;
   using rest = TypeList<>;
 };
+
+#endif

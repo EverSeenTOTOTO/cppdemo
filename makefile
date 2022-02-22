@@ -8,7 +8,8 @@ CPP_FLAGS = -g 		\
 	-lcrypto 				\
 	-std=c++2a 			\
 	-Werror 				\
-	-ftemplate-backtrace-limit=0
+	-ftemplate-backtrace-limit=0 \
+	-fext-numeric-literals
 
 clean:
 	@-rm -f *.o

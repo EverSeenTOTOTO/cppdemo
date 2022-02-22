@@ -1,3 +1,5 @@
+#ifndef PARALLEL_QUEUE_H
+#define PARALLEL_QUEUE_H
 #include <deque>
 #include <optional>
 
@@ -44,3 +46,4 @@ class SimpleParallelQueue {
         Semaphore *slots;
         Semaphore *items;
 };
+#endif
