@@ -1,3 +1,5 @@
+#ifndef THREAD_POOL_H
+#define THREAD_POOL_H
 #include <deque>
 #include <functional>
 #include <thread>
@@ -43,3 +45,4 @@ class ThreadPool {
     Semaphore *mutex;
     Semaphore *taskCount;
 };
+#endif

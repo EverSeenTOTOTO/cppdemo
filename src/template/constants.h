@@ -1,3 +1,5 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
 #include <cmath>
 
 // 整数阶乘
@@ -60,3 +62,5 @@ struct pi {
 };
 
 static constexpr auto PI = pi<2>::value;
+
+#endif
