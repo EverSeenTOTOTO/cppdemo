@@ -2,12 +2,11 @@
 #define SEMAPHONE_H
 #include <iostream>
 #include <mutex>
-#include <thread>
 #include <condition_variable>
 
 class Semaphore {
     public:
-        Semaphore(int value): value(value) {}
+        Semaphore(int value = 1): value(value) {}
 
         void P() {
             std::unique_lock<std::mutex> lock(mtx);
@@ -27,6 +26,5 @@ class Semaphore {
         std::mutex mtx;
         std::condition_variable cv;
         int value;
-
 };
 #endif
