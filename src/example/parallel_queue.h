@@ -1,0 +1,46 @@
+#ifndef PARALLEL_QUEUE_H
+#define PARALLEL_QUEUE_H
+#include <queue>
+
+#include "./semaphore.h"
+
+template<typename T>
+class ParallelQueue {
+    public:
+        ParallelQueue(size_t length) {
+            this->mutex = new Semaphore(1);
+            this->slots = new Semaphore(length);
+            this->items = new Semaphore(0);
+        }
+
+        ~ParallelQueue() {
+            delete mutex;
+            delete slots;
+            delete items;
+        }
+
+        void write(T const& item) {
+            slots->P();
+            mutex->P();
+            queue.push(item);
+            mutex->V();
+            items->V();
+        }
+
+        T const& read() { // 不需要optional
+            items->P();
+            mutex->P();
+            T const& data = queue.front();
+            queue.pop();
+            mutex->V();
+            slots->V();
+            return data;
+        }
+
+    private:
+        std::queue<T> queue;
+        Semaphore *mutex;
+        Semaphore *items;
+        Semaphore *slots;
+};
+#endif

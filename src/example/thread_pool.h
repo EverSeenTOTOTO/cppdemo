@@ -1,6 +1,6 @@
 #ifndef THREAD_POOL_H
 #define THREAD_POOL_H
-#include <deque>
+#include <queue>
 #include <functional>
 #include <thread>
 #include <condition_variable>
@@ -18,8 +18,8 @@ class ThreadPool {
           while(1) {
             taskCount->P();
             mutex->P();
-            Task task = tasks.front();
-            tasks.erase(tasks.begin());
+            auto task = tasks.front();
+            tasks.pop();
             mutex->V();
             task();
           }
@@ -35,13 +35,13 @@ class ThreadPool {
 
     void submit(Task const& task) {
       mutex->P();
-      tasks.push_back(task);
+      tasks.push(task);
       mutex->V();
       taskCount->V();
     }
 
   private:
-    std::deque<Task> tasks;
+    std::queue<Task> tasks;
     Semaphore *mutex;
     Semaphore *taskCount;
 };
