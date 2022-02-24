@@ -12,7 +12,7 @@ struct PriorReaderState {
   int reader_count;
 
   std::mutex rcm;
-  std::mutex wm;
+  std::mutex rwm;
 };
 
 class Tester {
@@ -40,7 +40,7 @@ public:
       timer::report(name + " changed reader count to: " + std::to_string(state.reader_count));
 
       if (state.reader_count == 1) {
-          state.wm.lock();
+          state.rwm.lock();
           timer::report(name + " is first reader, it locks for write so that later writers should wait until no reader is reading and pending");
       }
       state.rcm.unlock();
@@ -52,7 +52,7 @@ public:
       state.reader_count--;
 
       if (state.reader_count == 0) {
-          state.wm.unlock();
+          state.rwm.unlock();
           timer::report(name + " is last reader, unlock write");
       }
       state.rcm.unlock();
@@ -70,12 +70,12 @@ public:
       sleep(arrive_time);
 
       timer::report(name + " arrived");
-      state.wm.lock();
+      state.rwm.lock();
 
       timer::report(name + " writing...");
       sleep(action_cost);
 
-      state.wm.unlock();
+      state.rwm.unlock();
       timer::report(name + " left");
   }
 };
@@ -87,15 +87,15 @@ void test_prior_reader() {
 
     PriorReaderState state;
 
-    PriorReader r1("r1", 0, 1000);
-    PriorReader r2("r2", 1200, 1000);
-    LowerWriter w1("w1", 500, 500);
+    PriorReader r1("r1", 800, 100);
+    LowerWriter w1("w1", 0, 1000);
+    LowerWriter w2("w2", 500, 100); 
 
     threads.emplace_back(std::thread([&]() {
           r1.read(state);
     }));
     threads.emplace_back(std::thread([&]() {
-          r2.read(state);
+          w2.write(state);
     }));
     threads.emplace_back(std::thread([&]() {
           w1.write(state);
@@ -107,12 +107,13 @@ void test_prior_reader() {
 }
 
 struct PriorWriterState {
-  PriorWriterState() : {}
+  PriorWriterState() : reader_count(0) {}
 
-  int writer_count;
+  int reader_count;
 
-  std::mutex rm;
-  std::mutex wcm;
+  std::mutex wm;
+  std::mutex rcm;
+  std::mutex rwm;
 };
 
 class PriorWriter : public Tester {
@@ -122,6 +123,19 @@ public:
   }
 
   void write(PriorWriterState& state) {
+      sleep(arrive_time);
+
+      timer::report(name + " arrived");
+      state.wm.lock();
+      state.rwm.lock();
+
+      timer::report(name + " writing...");
+      sleep(action_cost);
+
+      state.rwm.unlock();
+      state.wm.unlock();
+      timer::report(name + " left");
+
   }
 };
 
@@ -132,6 +146,34 @@ public:
   }
 
   void read(PriorWriterState& state) {
+      sleep(arrive_time);
+
+      timer::report(name + " arrived");
+      state.wm.lock();
+      state.rcm.lock();
+      state.reader_count++;
+      timer::report(name + " changed reader count to: " + std::to_string(state.reader_count));
+
+      if (state.reader_count == 1) {
+          state.rwm.lock();
+          timer::report(name + " is first reader, it locks for write");
+      }
+      state.rcm.unlock();
+      state.wm.unlock();
+
+      timer::report(name + " reading...");
+      sleep(action_cost);
+
+      state.rcm.lock();
+      state.reader_count--;
+
+      if (state.reader_count == 0) {
+          state.rwm.unlock();
+          timer::report(name + " is last reader, unlock write");
+      }
+      state.rcm.unlock();
+      timer::report(name + " left");
+
   }
 };
 
@@ -143,8 +185,8 @@ void test_prior_writer() {
     PriorWriterState state;
 
     LowerReader r1("r1", 0, 1000);
-    LowerReader r2("r2", 500, 1000);
-    PriorWriter w1("w1", 800, 1000);
+    LowerReader r2("r2", 800, 1000);
+    PriorWriter w1("w1", 500, 1000);
 
     threads.emplace_back(std::thread([&]() {
           r1.read(state);
