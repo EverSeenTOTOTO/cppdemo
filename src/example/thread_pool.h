@@ -12,11 +12,11 @@ class ThreadPool {
     typedef std::function<void(void)> Task;
     ThreadPool(size_t length) {
       this->mutex = new Semaphore(1);
-      this->taskCount = new Semaphore(0);
+      this->task_count = new Semaphore(0);
       for(size_t i=0; i<length; ++i) {
         std::thread worker([this]() {
           while(1) {
-            taskCount->P();
+            task_count->P();
             mutex->P();
             auto task = tasks.front();
             tasks.pop();
@@ -30,19 +30,19 @@ class ThreadPool {
 
     ~ThreadPool() {
       delete mutex;
-      delete taskCount;
+      delete task_count;
     }
 
     void submit(Task const& task) {
       mutex->P();
       tasks.push(task);
       mutex->V();
-      taskCount->V();
+      task_count->V();
     }
 
   private:
     std::queue<Task> tasks;
     Semaphore *mutex;
-    Semaphore *taskCount;
+    Semaphore *task_count;
 };
 #endif
