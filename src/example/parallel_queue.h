@@ -7,7 +7,7 @@
 template<typename T>
 class ParallelQueue {
     public:
-        ParallelQueue(size_t length) {
+        ParallelQueue(size_t length = 1) {
             this->mutex = new Semaphore(1);
             this->slots = new Semaphore(length);
             this->items = new Semaphore(0);
@@ -35,6 +35,13 @@ class ParallelQueue {
             mutex->V();
             slots->V();
             return data;
+        }
+
+        size_t size() {
+            mutex->P();
+            size_t size = queue.size();
+            mutex->V();
+            return size;
         }
 
     private:
