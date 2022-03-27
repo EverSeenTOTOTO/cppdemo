@@ -2,6 +2,7 @@ MAIN = main
 ENTRY = src/$(MAIN).cpp
 
 CPP_FLAGS = -g 		\
+	-pipe 					\
 	-ldl 						\
 	-lpthread 			\
 	-lssl 					\
@@ -9,7 +10,9 @@ CPP_FLAGS = -g 		\
 	-std=c++2a 			\
 	-Werror 				\
 	-ftemplate-backtrace-limit=0 \
-	-fext-numeric-literals
+	-fext-numeric-literals \
+	-finline-functions \
+	-funswitch-loops
 
 clean:
 	@-rm -f *.o

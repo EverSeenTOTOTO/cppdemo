@@ -54,7 +54,10 @@
     "thread": "cpp",
     "typeinfo": "cpp",
     "iomanip": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "future": "cpp",
+    "numbers": "cpp",
+    "semaphore": "cpp"
   },
   "C_Cpp.errorSquiggles": "Disabled"
 }
