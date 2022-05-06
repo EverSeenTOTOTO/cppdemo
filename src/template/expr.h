@@ -16,6 +16,8 @@ template<typename, typename>
 struct mul_expr;
 template<typename, typename, typename>
 struct pow_expr;
+template<typename, typename>
+struct log_expr;
 
 template<typename T, typename ...Rest>
 auto invoke(T keep, Rest... rest) {
