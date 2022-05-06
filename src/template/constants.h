@@ -2,6 +2,7 @@
 #define CONSTANTS_H
 #include <cmath>
 
+namespace constants_helpers {
 // 整数阶乘
 template<size_t N>
 struct fact {
@@ -10,37 +11,29 @@ struct fact {
 
 template<>
 struct fact<0> {
-  static constexpr size_t value = 1.0;
-};
-
-// 利用麦克劳林级数计算自然对数e
-template<size_t N>
-struct eular {
-  static constexpr double value = 1.0 / (double)(fact<N>::value) + eular<N - 1>::value;
-};
-
-template<>
-struct eular<0> {
-  static constexpr double value = 1.0;
-};
-
-static constexpr auto Eular = eular<10>::value;
-
-// 判断是偶数
-template<size_t N>
-struct is_even {
-  static constexpr bool value = N % 2 == 0;
+  static constexpr size_t value = 1;
 };
 
 // 整数幂
 template<int val, size_t N>
 struct power {
-  static constexpr auto value = val * power<val, N - 1>::value;
+  static constexpr double value = val * power<val, N - 1>::value;
 };
 
 template<int val>
 struct power<val, 0> {
-  static constexpr auto value = 1.0;
+  static constexpr double value = 1.0;
+};
+
+// 利用麦克劳林级数计算自然对数e
+template<size_t N>
+struct eular {
+  static constexpr double value = 1.0 / (fact<N>::value) + eular<N - 1>::value;
+};
+
+template<>
+struct eular<0> {
+  static constexpr double value = 1.0;
 };
 
 // Ramanujan 什么神仙公式，效率好高啊
@@ -61,6 +54,9 @@ struct pi {
   static constexpr double value = 9801.0 / 2.0 / std::sqrt(2.0) / pi_helper<N>::value;
 };
 
-static constexpr auto PI = pi<2>::value;
+} // namespace constants_helpers
+
+static constexpr double E = constants_helpers::eular<20>::value;
+static constexpr double PI = constants_helpers::pi<2>::value;
 
 #endif
