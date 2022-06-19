@@ -6,36 +6,31 @@
 #include "./parallel_queue.h"
 #include "./read_write.h"
 
-enum MessageType {
-  Arrived,
-  Left,
-  AllowRead,
-  AllowWrite
-};
+enum MessageType { Arrived, Left, AllowRead, AllowWrite };
 
 template <typename T>
 struct Message {
   MessageType type;
   T data;
 
-  Message(MessageType type,T data)
-      : type(type), data(data) {}
+  Message(MessageType type, T data) : type(type), data(data) {}
 };
 
-template<typename T>
+template <typename T>
 using Channel = ParallelQueue<Message<T*>>;
 
-template<class Actor>
+template <class Actor>
 class Dispatcher {
   using ActorQueue = std::queue<Actor*>;
-public:
+
+ public:
   Channel<Actor> channel;
 
   // 读优先调度
   void prior_reader() {
-    while(true) {
+    while (true) {
       auto msg = channel.read();
-      switch(msg.type) {
+      switch (msg.type) {
         case MessageType::Arrived:
           timer::report(msg.data->name + " arrived");
           pr_arrive(msg.data);
@@ -52,9 +47,9 @@ public:
 
   // 写优先调度
   void prior_writer() {
-    while(true) {
+    while (true) {
       auto msg = channel.read();
-      switch(msg.type) {
+      switch (msg.type) {
         case MessageType::Arrived:
           timer::report(msg.data->name + " arrived");
           wr_arrive(msg.data);
@@ -69,18 +64,18 @@ public:
     }
   }
 
-protected:
+ protected:
   void pr_arrive(Actor* actor) {
     if (actor->is_reader) {
       pending_readers.push(actor);
       if (!is_writing) {
         allow_read();
-      } 
+      }
     } else {
       pending_writers.push(actor);
       if (!is_writing && reading_count == 0) {
         allow_write();
-      } 
+      }
     }
   }
 
@@ -91,7 +86,7 @@ protected:
       is_writing = false;
 
       // reader prior
-      while(!pending_readers.empty()) {
+      while (!pending_readers.empty()) {
         allow_read();
       }
     }
@@ -128,7 +123,7 @@ protected:
     }
 
     if (!is_writing) {
-      while(!pending_readers.empty()) {
+      while (!pending_readers.empty()) {
         allow_read();
       }
     }
@@ -138,7 +133,7 @@ protected:
     if (!pending_readers.empty()) {
       auto reader = pending_readers.front();
       pending_readers.pop();
-      Message<Actor*> msg(MessageType::AllowRead,reader);
+      Message<Actor*> msg(MessageType::AllowRead, reader);
       reader->channel.write(msg);
       reading_count++;
     }
@@ -148,13 +143,13 @@ protected:
     if (!pending_writers.empty()) {
       auto writer = pending_writers.front();
       pending_writers.pop();
-      Message<Actor*> msg(MessageType::AllowWrite,writer);
+      Message<Actor*> msg(MessageType::AllowWrite, writer);
       writer->channel.write(msg);
       is_writing = true;
     }
   }
 
-private:
+ private:
   ActorQueue pending_readers;
   ActorQueue pending_writers;
   bool is_writing = false;
@@ -162,7 +157,7 @@ private:
 };
 
 class Actor : public Tester {
-public:
+ public:
   Actor(std::string const& name, int arrive_time, int action_cost, bool is_reader) : Tester(name, arrive_time, action_cost), is_reader(is_reader) {}
 
   void run(Dispatcher<Actor>& dispacher) {
@@ -171,7 +166,7 @@ public:
     Message<Actor*> msg = Message<Actor*>(MessageType::Arrived, this);
     dispacher.channel.write(msg);
 
-    channel.read(); // must be AllowRead/AllowWrite because dispacher only send once for each actor channel
+    channel.read();  // must be AllowRead/AllowWrite because dispacher only send once for each actor channel
     timer::report(name + " doing action");
     sleep(action_cost);
 
@@ -184,21 +179,21 @@ public:
 };
 
 void test_dispatcher() {
-    Actor r1("r1", 0, 1000, true);
-    Actor r2("r2", 800, 1000, true);
-    Actor w1("w1", 500, 1000, false);
-    Actor w2("w2", 900, 1000, false);
-    Dispatcher<Actor> dispatcher;
-    std::vector<std::thread> threads;
+  Actor r1("r1", 0, 1000, true);
+  Actor r2("r2", 800, 1000, true);
+  Actor w1("w1", 500, 1000, false);
+  Actor w2("w2", 900, 1000, false);
+  Dispatcher<Actor> dispatcher;
+  std::vector<std::thread> threads;
 
-    threads.emplace_back(std::thread([&]() { dispatcher.prior_writer(); }));
-    threads.emplace_back(std::thread([&]() { r1.run(dispatcher); }));
-    threads.emplace_back(std::thread([&]() { r2.run(dispatcher); }));
-    threads.emplace_back(std::thread([&]() { w1.run(dispatcher); }));
-    threads.emplace_back(std::thread([&]() { w2.run(dispatcher); }));
+  threads.emplace_back(std::thread([&]() { dispatcher.prior_writer(); }));
+  threads.emplace_back(std::thread([&]() { r1.run(dispatcher); }));
+  threads.emplace_back(std::thread([&]() { r2.run(dispatcher); }));
+  threads.emplace_back(std::thread([&]() { w1.run(dispatcher); }));
+  threads.emplace_back(std::thread([&]() { w2.run(dispatcher); }));
 
-    for(auto& t : threads) {
-        t.join();
-    }
+  for (auto& t : threads) {
+    t.join();
+  }
 }
 #endif
