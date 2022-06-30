@@ -6,11 +6,12 @@
 
 class Tester {
  public:
-  Tester(std::string const& name, int arrive_time, int action_cost) : name(name), arrive_time(arrive_time), action_cost(action_cost) {}
+  Tester(std::string const& name, int arrive_time, int action_cost)
+      : name(name), arrive_time(arrive_time), action_cost(action_cost) {}
 
   std::string name;
-  int arrive_time;
-  int action_cost;
+  int         arrive_time;
+  int         action_cost;
 };
 
 // 读者优先
@@ -25,7 +26,11 @@ struct PriorReaderState {
 
 class PriorReader : public Tester {
  public:
-  PriorReader(std::string const& name, int arrive_time, int action_cost) : Tester(name, arrive_time, action_cost) { timer::report("create reader " + name + ", read cost " + std::to_string(action_cost) + "ms" + ", will arrive at " + std::to_string(arrive_time) + "ms"); }
+  PriorReader(std::string const& name, int arrive_time, int action_cost)
+      : Tester(name, arrive_time, action_cost) {
+    timer::report("create reader " + name + ", read cost " + std::to_string(action_cost) + "ms"
+                  + ", will arrive at " + std::to_string(arrive_time) + "ms");
+  }
 
   void read(PriorReaderState& state) {
     sleep(arrive_time);
@@ -58,7 +63,11 @@ class PriorReader : public Tester {
 
 class LowerWriter : public Tester {
  public:
-  LowerWriter(std::string const& name, int arrive_time, int action_cost) : Tester(name, arrive_time, action_cost) { timer::report("create writer " + name + ", write cost " + std::to_string(action_cost) + "ms" + ", will arrive at " + std::to_string(arrive_time) + "ms"); }
+  LowerWriter(std::string const& name, int arrive_time, int action_cost)
+      : Tester(name, arrive_time, action_cost) {
+    timer::report("create writer " + name + ", write cost " + std::to_string(action_cost) + "ms"
+                  + ", will arrive at " + std::to_string(arrive_time) + "ms");
+  }
 
   void write(PriorReaderState& state) {
     sleep(arrive_time);
@@ -74,25 +83,7 @@ class LowerWriter : public Tester {
   }
 };
 
-void test_prior_reader() {
-  timer::reset();
-
-  auto threads = std::vector<std::thread>();
-
-  PriorReaderState state;
-
-  PriorReader r1("r1", 0, 1000);
-  PriorReader r2("r2", 800, 1000);
-  LowerWriter w1("w1", 500, 1000);
-
-  threads.emplace_back(std::thread([&]() { r1.read(state); }));
-  threads.emplace_back(std::thread([&]() { r2.read(state); }));
-  threads.emplace_back(std::thread([&]() { w1.write(state); }));
-
-  for (auto& t : threads) {
-    t.join();
-  }
-}
+void test_prior_reader();
 
 // 写者优先
 struct PriorWriterState {
@@ -109,7 +100,11 @@ struct PriorWriterState {
 
 class PriorWriter : public Tester {
  public:
-  PriorWriter(std::string const& name, int arrive_time, int action_cost) : Tester(name, arrive_time, action_cost) { timer::report("create writer " + name + ", write cost " + std::to_string(action_cost) + "ms" + ", will arrive at " + std::to_string(arrive_time) + "ms"); }
+  PriorWriter(std::string const& name, int arrive_time, int action_cost)
+      : Tester(name, arrive_time, action_cost) {
+    timer::report("create writer " + name + ", write cost " + std::to_string(action_cost) + "ms"
+                  + ", will arrive at " + std::to_string(arrive_time) + "ms");
+  }
 
   void write(PriorWriterState& state) {
     sleep(arrive_time);
@@ -143,7 +138,11 @@ class PriorWriter : public Tester {
 
 class LowerReader : public Tester {
  public:
-  LowerReader(std::string const& name, int arrive_time, int action_cost) : Tester(name, arrive_time, action_cost) { timer::report("create reader " + name + ", read cost " + std::to_string(action_cost) + "ms" + ", will arrive at " + std::to_string(arrive_time) + "ms"); }
+  LowerReader(std::string const& name, int arrive_time, int action_cost)
+      : Tester(name, arrive_time, action_cost) {
+    timer::report("create reader " + name + ", read cost " + std::to_string(action_cost) + "ms"
+                  + ", will arrive at " + std::to_string(arrive_time) + "ms");
+  }
 
   void read(PriorWriterState& state) {
     sleep(arrive_time);
@@ -177,25 +176,7 @@ class LowerReader : public Tester {
   }
 };
 
-void test_prior_writer() {
-  timer::reset();
-
-  auto threads = std::vector<std::thread>();
-
-  PriorWriterState state;
-
-  PriorWriter w1("w1", 800, 1000);
-  LowerReader r1("r1", 0, 1000);
-  LowerReader r2("r2", 800, 1000);
-
-  threads.emplace_back(std::thread([&]() { r1.read(state); }));
-  threads.emplace_back(std::thread([&]() { r2.read(state); }));
-  threads.emplace_back(std::thread([&]() { w1.write(state); }));
-
-  for (auto& t : threads) {
-    t.join();
-  }
-}
+void test_prior_writer();
 
 // 公平竞争
 struct FairState {
@@ -210,7 +191,11 @@ struct FairState {
 
 class Reader : public Tester {
  public:
-  Reader(std::string const& name, int arrive_time, int action_cost) : Tester(name, arrive_time, action_cost) { timer::report("create reader " + name + ", read cost " + std::to_string(action_cost) + "ms" + ", will arrive at " + std::to_string(arrive_time) + "ms"); }
+  Reader(std::string const& name, int arrive_time, int action_cost)
+      : Tester(name, arrive_time, action_cost) {
+    timer::report("create reader " + name + ", read cost " + std::to_string(action_cost) + "ms"
+                  + ", will arrive at " + std::to_string(arrive_time) + "ms");
+  }
 
   void read(FairState& state) {
     sleep(arrive_time);
@@ -246,7 +231,11 @@ class Reader : public Tester {
 
 class Writer : public Tester {
  public:
-  Writer(std::string const& name, int arrive_time, int action_cost) : Tester(name, arrive_time, action_cost) { timer::report("create writer " + name + ", write cost " + std::to_string(action_cost) + "ms" + ", will arrive at " + std::to_string(arrive_time) + "ms"); }
+  Writer(std::string const& name, int arrive_time, int action_cost)
+      : Tester(name, arrive_time, action_cost) {
+    timer::report("create writer " + name + ", write cost " + std::to_string(action_cost) + "ms"
+                  + ", will arrive at " + std::to_string(arrive_time) + "ms");
+  }
 
   void write(FairState& state) {
     sleep(arrive_time);
@@ -263,23 +252,5 @@ class Writer : public Tester {
   }
 };
 
-void test_fair() {
-  timer::reset();
-
-  auto threads = std::vector<std::thread>();
-
-  FairState state;
-
-  Reader r1("r1", 0, 1000);
-  Reader r2("r2", 500, 1000);
-  Writer w1("w1", 800, 1000);
-
-  threads.emplace_back(std::thread([&]() { r1.read(state); }));
-  threads.emplace_back(std::thread([&]() { r2.read(state); }));
-  threads.emplace_back(std::thread([&]() { w1.write(state); }));
-
-  for (auto& t : threads) {
-    t.join();
-  }
-}
+void test_fair();
 #endif

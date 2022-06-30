@@ -11,7 +11,7 @@ class ThreadPool {
  public:
   typedef std::function<void(void)> Task;
   ThreadPool(size_t length) {
-    this->mutex = new Semaphore(1);
+    this->mutex      = new Semaphore(1);
     this->task_count = new Semaphore(0);
     for (size_t i = 0; i < length; ++i) {
       std::thread worker([this]() {
@@ -42,7 +42,7 @@ class ThreadPool {
 
  private:
   std::queue<Task> tasks;
-  Semaphore *mutex;
-  Semaphore *task_count;
+  Semaphore       *mutex;
+  Semaphore       *task_count;
 };
 #endif

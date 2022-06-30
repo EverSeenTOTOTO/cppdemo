@@ -1,6 +1,7 @@
 #ifndef TEMPLATE_EXPR_H
 #define TEMPLATE_EXPR_H
 #include <cmath>
+#include <ostream>
 
 struct expr {};
 
@@ -58,21 +59,30 @@ struct pow_helper {
   Lhs lhs;
   Rhs rhs;
 
-  auto operator()() { return std::pow(lhs, rhs); }
+  auto operator()() {
+    return std::pow(lhs, rhs);
+  }
 };
 
 template <typename Lhs, typename Rhs>
-struct pow_helper<Lhs, Rhs, std::enable_if_t<std::is_base_of_v<expr, Rhs> || std::is_base_of_v<expr, Lhs>>> {
+struct pow_helper<Lhs, Rhs,
+                  std::enable_if_t<std::is_base_of_v<expr, Rhs> || std::is_base_of_v<expr, Lhs>>> {
   pow_helper(Lhs lhs, Rhs rhs) : lhs(lhs), rhs(rhs) {}
 
   Lhs lhs;
   Rhs rhs;
 
-  auto operator()() { return lhs ^ rhs; }
+  auto operator()() {
+    return lhs ^ rhs;
+  }
 };
 
 template <typename Lhs, typename Rhs, typename... Args>
-auto invoke(pow_expr<Lhs, Rhs, std::enable_if_t<!(std::is_base_of_v<expr, Lhs> && std::is_base_of_v<expr, Rhs>)>> const& pow, Args... args) {
+auto invoke(
+    pow_expr<Lhs, Rhs,
+             std::enable_if_t<
+                 !(std::is_base_of_v<expr, Lhs> && std::is_base_of_v<expr, Rhs>)>> const& pow,
+    Args... args) {
   auto lhs = invoke(pow.lhs, args...);
   auto rhs = invoke(pow.rhs, args...);
 
@@ -85,7 +95,9 @@ struct equation : expr {
 
   Val val;
 
-  friend std::ostream& operator<<(std::ostream& out, equation<Name, Val> const& eq) { return out << "(" << Name << " = " << eq.val << ")"; }
+  friend std::ostream& operator<<(std::ostream& out, equation<Name, Val> const& eq) {
+    return out << "(" << Name << " = " << eq.val << ")";
+  }
 };
 
 template <char Name>
@@ -102,7 +114,9 @@ struct placeholder : expr {
     return invoke(*this, args...);
   }
 
-  friend std::ostream& operator<<(std::ostream& out, placeholder<Name> const& ph) { return out << ph.name; }
+  friend std::ostream& operator<<(std::ostream& out, placeholder<Name> const& ph) {
+    return out << ph.name;
+  }
 };
 
 static constexpr auto x = placeholder<'x'>{};
@@ -121,7 +135,9 @@ struct add_expr : expr {
     return invoke(*this, args...);
   }
 
-  friend std::ostream& operator<<(std::ostream& out, add_expr<Lhs, Rhs> const& expr) { return out << "(" << expr.lhs << " + " << expr.rhs << ")"; }
+  friend std::ostream& operator<<(std::ostream& out, add_expr<Lhs, Rhs> const& expr) {
+    return out << "(" << expr.lhs << " + " << expr.rhs << ")";
+  }
 };
 
 template <typename Lhs, typename Rhs>
@@ -141,7 +157,9 @@ struct sub_expr : expr {
     return invoke(*this, args...);
   }
 
-  friend std::ostream& operator<<(std::ostream& out, sub_expr<Lhs, Rhs> const& expr) { return out << "(" << expr.lhs << " - " << expr.rhs << ")"; }
+  friend std::ostream& operator<<(std::ostream& out, sub_expr<Lhs, Rhs> const& expr) {
+    return out << "(" << expr.lhs << " - " << expr.rhs << ")";
+  }
 };
 
 template <typename Lhs, typename Rhs>
@@ -161,7 +179,9 @@ struct mul_expr : expr {
     return invoke(*this, args...);
   }
 
-  friend std::ostream& operator<<(std::ostream& out, mul_expr<Lhs, Rhs> const& expr) { return out << "(" << expr.lhs << " * " << expr.rhs << ")"; }
+  friend std::ostream& operator<<(std::ostream& out, mul_expr<Lhs, Rhs> const& expr) {
+    return out << "(" << expr.lhs << " * " << expr.rhs << ")";
+  }
 };
 
 template <typename Lhs, typename Rhs>
@@ -181,12 +201,16 @@ struct pow_expr : expr {
     return invoke(*this, args...);
   }
 
-  friend std::ostream& operator<<(std::ostream& out, pow_expr<Lhs, Rhs> const& expr) { return out << "(" << expr.lhs << " ^ " << expr.rhs << ")"; }
+  friend std::ostream& operator<<(std::ostream& out, pow_expr<Lhs, Rhs> const& expr) {
+    return out << "(" << expr.lhs << " ^ " << expr.rhs << ")";
+  }
 };
 
 template <typename Lhs, typename Rhs>
 auto operator^(Lhs lhs, Rhs rhs) {
-  return pow_expr<Lhs, Rhs, std::enable_if_t<!(std::is_base_of_v<expr, Lhs> && std::is_base_of_v<expr, Rhs>)>>{lhs, rhs};
+  return pow_expr<
+      Lhs, Rhs, std::enable_if_t<!(std::is_base_of_v<expr, Lhs> && std::is_base_of_v<expr, Rhs>)>>{
+      lhs, rhs};
 }
 
 // 求导函数
@@ -222,7 +246,8 @@ auto d(pow_expr<Lhs, Rhs, std::enable_if_t<std::is_base_of_v<expr, Lhs>>> pow, V
 
 template <typename Lhs, typename Rhs, typename Var>
 auto d(pow_expr<Lhs, Rhs, std::enable_if_t<std::is_base_of_v<expr, Rhs>>> pow, Var var) {
-  return std::log(static_cast<double>(pow.lhs)) * pow * d(pow.rhs, var);  // d(a^f) = ln(a) * (a^f) * d(f)
+  return std::log(static_cast<double>(pow.lhs)) * pow
+         * d(pow.rhs, var);  // d(a^f) = ln(a) * (a^f) * d(f)
 }
 
 #endif

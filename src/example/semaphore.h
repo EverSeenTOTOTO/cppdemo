@@ -10,8 +10,9 @@ class Semaphore {
 
   void P() {
     std::unique_lock<std::mutex> lock(mtx);
-    // Note that lock must be acquired before entering this method, and it is reacquired after wait(lock) exits, which means that lock can be used to guard access to stop_waiting().
-    // see https://en.cppreference.com/w/cpp/thread/condition_variable/wait
+    // Note that lock must be acquired before entering this method, and it is reacquired after
+    // wait(lock) exits, which means that lock can be used to guard access to stop_waiting(). see
+    // https://en.cppreference.com/w/cpp/thread/condition_variable/wait
     cv.wait(lock, [this]() { return value > 0; });
     value--;
   }
@@ -23,8 +24,8 @@ class Semaphore {
   }
 
  private:
-  std::mutex mtx;
+  std::mutex              mtx;
   std::condition_variable cv;
-  int value;
+  int                     value;
 };
 #endif

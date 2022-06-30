@@ -46,8 +46,8 @@ class ParallelQueue {
 
  private:
   std::queue<T> queue;
-  Semaphore* mutex;
-  Semaphore* items;
-  Semaphore* slots;
+  Semaphore*    mutex;
+  Semaphore*    items;
+  Semaphore*    slots;
 };
 #endif

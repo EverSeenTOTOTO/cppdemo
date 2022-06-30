@@ -1,5 +1,3 @@
-MAIN = main
-
 CPP_FLAGS = -g 		\
 	-pipe 					\
 	-lpthread 			\
@@ -10,6 +8,10 @@ CPP_FLAGS = -g 		\
 	-funswitch-loops \
 	--verbose
 
+.PHONY: prepare
+prepare:
+	bear -- make build
+
 .PHONY: clean
 clean:
 	@-rm -f *.o
@@ -18,12 +20,15 @@ clean:
 	@-rm -f *.S
 
 .PHONY: build
-build: clean
-	bear -- g++ src/${MAIN}.cpp -o ${MAIN}.out ${CPP_FLAGS}
-	objdump -S $(MAIN).out > $(MAIN).asm
-	echo
-	./$(MAIN).out
+build: clean 
+	g++ -c src/example/*.cpp src/main.cpp ${CPP_FLAGS}
+	g++ src/example/*.cpp src/main.cpp -o main.out
+
+.PHONY: start
+start:
+	@echo
+	@./main.out
 
 .PHONY: debug
 debug:
-	@gdb ${MAIN}.out
+	@gdb main.out
