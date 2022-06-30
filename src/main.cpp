@@ -1,1 +1,7 @@
-int main() { return 0; }
+#include "example/regex.h"
+
+int main() {
+  test_backref();
+
+  return 0;
+}

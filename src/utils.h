@@ -6,9 +6,9 @@
 #include <random>
 #include <thread>
 
-int random_integer(int from, int to) {
-  std::random_device r;
-  std::default_random_engine eng(r());
+inline int random_integer(int from, int to) {
+  std::random_device                 r;
+  std::default_random_engine         eng(r());
   std::uniform_int_distribution<int> uniform_dist(from, to);
   return uniform_dist(eng);
 }
@@ -20,7 +20,9 @@ void sleep(int ms) {
 
 class timer {
  public:
-  static void reset() { now = std::chrono::high_resolution_clock::now(); }
+  static void reset() {
+    now = std::chrono::high_resolution_clock::now();
+  }
 
   template <typename Time = std::chrono::milliseconds>
   static double count() {
@@ -33,7 +35,9 @@ class timer {
     using namespace std;
     auto time_point = count<Time>();
 
-    auto output = [&time_point, &message](std::string const& unit) { cout << left << setw(4) << "[" << time_point << unit << "]: " << message << endl; };
+    auto output = [&time_point, &message](std::string const& unit) {
+      cout << left << setw(4) << "[" << time_point << unit << "]: " << message << endl;
+    };
 
     if constexpr (std::is_same<Time, std::chrono::seconds>::value) {
       output("s");
@@ -49,9 +53,8 @@ class timer {
   }
 
  private:
-  static std::chrono::high_resolution_clock::time_point now;
+  static inline std::chrono::high_resolution_clock::time_point now =
+      std::chrono::high_resolution_clock::now();
 };
-
-std::chrono::high_resolution_clock::time_point timer::now = std::chrono::high_resolution_clock::now();
 
 #endif
