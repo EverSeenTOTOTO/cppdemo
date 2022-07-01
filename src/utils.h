@@ -35,17 +35,17 @@ class timer {
     using namespace std;
     auto time_point = count<Time>();
 
-    auto output = [&time_point, &message](std::string const& unit) {
+    auto output = [&time_point, &message](string const& unit) {
       cout << left << setw(4) << "[" << time_point << unit << "]: " << message << endl;
     };
 
-    if constexpr (std::is_same<Time, std::chrono::seconds>::value) {
+    if constexpr (is_same<Time, chrono::seconds>::value) {
       output("s");
-    } else if constexpr (std::is_same<Time, std::chrono::milliseconds>::value) {
+    } else if constexpr (is_same<Time, chrono::milliseconds>::value) {
       output("ms");
-    } else if constexpr (std::is_same<Time, std::chrono::microseconds>::value) {
+    } else if constexpr (is_same<Time, chrono::microseconds>::value) {
       output("us");
-    } else if constexpr (std::is_same<Time, std::chrono::nanoseconds>::value) {
+    } else if constexpr (is_same<Time, chrono::nanoseconds>::value) {
       output("ns");
     } else {
       output("");
