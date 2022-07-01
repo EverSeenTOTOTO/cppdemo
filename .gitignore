@@ -1,5 +1,6 @@
 *.o
-*.asm
+*.i
+*.s
 *.out
 compile_commands.json
 .cache
