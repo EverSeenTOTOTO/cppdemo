@@ -2,12 +2,14 @@
 # CPP = riscv64-linux-gnu-cpp
 # AS = riscv64-linux-gnu-as
 # LD = riscv64-linux-gnu-ld
+# AR = riscv64-linux-gnu-ar
 # OBJDUMP = riscv64-linux-gnu-objdump
 
 GCC = g++
 CPP = cpp
 AS = as
 LD = ld
+AR = ar
 OBJDUMP = objdump
 
 CPP_FLAGS = -g\
@@ -23,9 +25,9 @@ prepare:
 
 .PHONY: clean
 clean:
-	@-rm -rf src/**/*.{s,i,o,out}
-	@-rm -rf src/*.{s,i,o,out}
-	@-rm -rf *.{s,i,o,out}
+	@-rm -rf src/**/*.{s,i,o,out,a}
+	@-rm -rf src/*.{s,i,o,out,.a}
+	@-rm -rf *.{s,i,o,out,.a}
 
 # 对每一个.cpp文件替换.cpp为.i，得到cppfiles
 cppfiles = $(patsubst %.cpp,%.i,$(wildcard src/**/*.cpp src/*.cpp))
@@ -57,8 +59,12 @@ as: $(objfiles)
 # 链接
 .PHONY: build
 build: $(objfiles)
-	${GCC} -o main.out $(objfiles)
+	${GCC} -Xlinker --warn-common -o main.out $(objfiles)
 
 .PHONY: start 
 start: build 
 	./main.out
+
+# 静态库
+ar:
+	ar rs cppd.a src/example/semaphore.o
