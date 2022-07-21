@@ -1,21 +1,24 @@
 # GCC = riscv64-linux-gnu-g++-10
 # CPP = riscv64-linux-gnu-cpp
 # AS = riscv64-linux-gnu-as
-# LD = riscv64-linux-gnu-ld
 # AR = riscv64-linux-gnu-ar
 # OBJDUMP = riscv64-linux-gnu-objdump
 
 GCC = g++
 CPP = cpp
 AS = as
-LD = ld
 AR = ar
 OBJDUMP = objdump
+
+# GCC = clang++ # see https://bugs.llvm.org/show_bug.cgi?id=52265
+# CPP = clang-cpp
+# AS = llvm-as
+# AR = llvm-ar
+# OBJDUMP = llvm-objdump
 
 CPP_FLAGS = -g\
 	-O0\
 	-pipe\
-	-lpthread\
 	-std=c++2a\
 	-Werror
 
@@ -25,9 +28,9 @@ prepare:
 
 .PHONY: clean
 clean:
-	@-rm -rf src/**/*.{s,i,o,out,a}
-	@-rm -rf src/*.{s,i,o,out,.a}
-	@-rm -rf *.{s,i,o,out,.a}
+	@-rm -rf src/**/*.{s,i,o,out,a,ll}
+	@-rm -rf src/*.{s,i,o,out,a,ll}
+	@-rm -rf *.{s,i,o,out,a,ll}
 
 # 对每一个.cpp文件替换.cpp为.i，得到cppfiles
 cppfiles = $(patsubst %.cpp,%.i,$(wildcard src/**/*.cpp src/*.cpp))
@@ -59,7 +62,8 @@ as: $(objfiles)
 # 链接
 .PHONY: build
 build: $(objfiles)
-	${GCC} -Xlinker --warn-common -o main.out $(objfiles)
+	${GCC} -fuse-ld=lld -v -Xlinker --warn-common -o main.out $(objfiles)
+	@echo -e '\n\033[1;32m Built main.out. \033[0m'
 
 .PHONY: start 
 start: build 

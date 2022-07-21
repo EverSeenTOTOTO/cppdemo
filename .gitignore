@@ -2,6 +2,7 @@
 *.i
 *.s
 *.a
+*.ll
 *.out
 compile_commands.json
 .cache
