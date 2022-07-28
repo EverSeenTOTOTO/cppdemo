@@ -1,7 +1,6 @@
 #ifndef TEMPLATE_EXPR_H
 #define TEMPLATE_EXPR_H
-#include <cmath>
-#include <ostream>
+#include "../common.h"
 
 struct expr {};
 

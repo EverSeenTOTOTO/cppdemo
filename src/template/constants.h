@@ -1,6 +1,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
-#include <cmath>
+#include "../common.h"
 
 namespace constants_helpers {
   // 整数阶乘

@@ -8,7 +8,7 @@
 
 inline int random_integer(int from, int to) {
   std::random_device                 r;
-  std::default_random_engine         eng(r());
+  std::mt19937                       eng(r());
   std::uniform_int_distribution<int> uniform_dist(from, to);
   return uniform_dist(eng);
 }
@@ -31,11 +31,11 @@ class timer {
   }
 
   template <typename Time = std::chrono::milliseconds>
-  static void report(std::string const& message) {
+  static void report(std::string const &message) {
     using namespace std;
     auto time_point = count<Time>();
 
-    auto output = [&time_point, &message](string const& unit) {
+    auto output = [&time_point, &message](string const &unit) {
       cout << left << setw(4) << "[" << time_point << unit << "]: " << message << endl;
     };
 

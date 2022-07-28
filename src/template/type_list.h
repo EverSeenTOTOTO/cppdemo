@@ -1,7 +1,6 @@
 #ifndef TYPE_LIST_H
 #define TYPE_LIST_H
-#include <cstddef>
-#include <type_traits>
+#include "../common.h"
 
 struct never {};
 

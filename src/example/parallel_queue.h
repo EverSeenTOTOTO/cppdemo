@@ -1,7 +1,6 @@
 #ifndef PARALLEL_QUEUE_H
 #define PARALLEL_QUEUE_H
-#include <queue>
-
+#include "../common.h"
 #include "./semaphore.h"
 
 template <typename T>
@@ -27,7 +26,7 @@ class ParallelQueue {
     items->V();
   }
 
-  T const& read() {  // 不需要optional
+  T const& read() {
     items->P();
     mutex->P();
     T const& data = queue.front();

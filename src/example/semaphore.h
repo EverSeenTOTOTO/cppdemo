@@ -1,8 +1,6 @@
 #ifndef SEMAPHONE_H
 #define SEMAPHONE_H
-#include <condition_variable>
-#include <iostream>
-#include <mutex>
+#include "../common.h"
 
 class Semaphore {
  public:

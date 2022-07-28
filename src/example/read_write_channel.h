@@ -1,8 +1,7 @@
 #ifndef READ_WRITE_CHANNEL_H
 #define READ_WRITE_CHANNEL_H
 
-#include <queue>
-
+#include "../common.h"
 #include "./parallel_queue.h"
 #include "../utils.h"
 
