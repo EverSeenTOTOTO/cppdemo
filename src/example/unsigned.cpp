@@ -1,20 +1,14 @@
 #include "./unsigned.h"
+#include "../utils.h"
 
 void test_unsigned() {
-  printf("%d\n", 0 == 0U);
-  printf("%d\n", -1 < 0);
-  printf("%d\n", -1 < 0U);  // false
+  expect(0 == 0U, "0 == 0U");
+  expect(-1 < 0, "-1 < 0");
+  expect_not(-1 < 0U, "-1 > 0U");
 
-  printf("INT_MAX is %d\n", INT_MAX);
-  printf("INT_MIN is %d\n", INT_MIN);
+  expect(INT_MAX > INT_MIN, "INT_MAX > INT_MIN");
+  expect_not((unsigned int) INT_MAX > INT_MIN, "(unsigned int) INT_MAX < INT_MIN");
 
-  printf("%d\n", INT_MAX > INT_MIN);
-  printf("%d\n", (unsigned int) INT_MAX > INT_MIN);  // false
-  printf("%d\n", INT_MAX > (int) INT_MIN);           // true
-
-  printf("%d\n", -1 > -2);
-  printf("%d\n", -1U > -2);
-
-  printf("(unsigned int) -1: %u\n", (unsigned int) -1);
-  printf("(unsigned int) (INT_MIN - 1): %u\n", (unsigned int) INT_MIN - 1);
+  expect(-1 > -2, "-1 > -2");
+  expect(-1U > -2, "-1U > -2");
 }

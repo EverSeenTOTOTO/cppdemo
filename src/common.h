@@ -8,7 +8,18 @@
 #include <list>
 #include <queue>
 #include <regex>
+#include <chrono>
+#include <iomanip>
+#include <random>
+#include <thread>
+#include <future>
+#include <functional>
+#include <algorithm>
+#include <exception>
 
 #include <cmath>
 #include <climits>
 #include <cstdio>
+
+template <typename T>
+using vec = std::vector<T>;

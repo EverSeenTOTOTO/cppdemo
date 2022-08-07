@@ -6,3 +6,5 @@
 *.out
 compile_commands.json
 .cache
+.vscode/c_cpp_properties.json
+.vscode/settings.json
