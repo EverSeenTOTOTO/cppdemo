@@ -16,6 +16,7 @@
 #include <functional>
 #include <algorithm>
 #include <exception>
+#include <atomic>
 
 #include <cmath>
 #include <climits>

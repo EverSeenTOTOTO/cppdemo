@@ -1,7 +1,4 @@
 #include "./semaphore.h"
-#include <algorithm>
-#include <thread>
-#include <vector>
 
 Semaphore::Semaphore(int value) : value(value) {}
 
@@ -38,5 +35,7 @@ void test_semaphore() {
     }));
   }
 
-  for (auto& t : v) { t.join(); }
+  for (auto& t : v) {
+    t.join();
+  }
 }

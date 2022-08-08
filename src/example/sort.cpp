@@ -97,10 +97,10 @@ void test_quick_sort_parallel() {
   quick_sort(s);
   expect_eq(s[0], 1, "test quick_sort sync");
   timer::report("sync done");
-  timer::report("async");
 
   s = range(5e6, 0);
 
+  timer::report("async");
   quick_sort_parallel(s);
   expect_eq(s[0], 1, "test quick_sort async");
   timer::report("async done");
