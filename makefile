@@ -33,7 +33,7 @@ clean:
 	@-rm -rf *.{s,i,o,out,a,ll}
 
 # 对每一个.cpp文件替换.cpp为.i，得到cppfiles
-cppfiles = $(patsubst %.cpp,%.i,$(wildcard src/**/*.cpp src/*.cpp))
+cppfiles = $(patsubst %.cpp,%.i,$(wildcard src/dsal/*.cpp src/*.cpp))
 
 # 对每一个.i文件，声明它依赖对应的.cpp文件，然后使用预处理命令cpp生成它。$< 代表第一个依赖文件，$@ 会对每一个目标依次执行
 $(cppfiles): %.i: %.cpp
@@ -61,7 +61,7 @@ as: $(objfiles)
 
 # 链接
 .PHONY: build
-build: $(objfiles)
+build: clean $(objfiles)
 	${GCC} -fuse-ld=lld -v -Xlinker --warn-common -o main.out $(objfiles)
 	@echo -e '\n\033[1;32m Built main.out. \033[0m'
 

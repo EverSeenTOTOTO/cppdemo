@@ -22,8 +22,8 @@ void expect_eq(vec<T> const& a, vec<T> const& b, std::string const& message) {
   expect(a.size() == b.size() && p.first == a.end() && p.second == b.end(), message);
 }
 
-template <typename T>
-void expect_eq(T const& a, T const& b, std::string const& message) {
+template <typename T, typename U>
+void expect_eq(T const& a, U const& b, std::string const& message) {
   expect(a == b, message);
 }
 
@@ -34,7 +34,7 @@ inline void swap(Vec& v, size_t a, size_t b) {
   v[b]      = temp;
 }
 
-template<typename T>
+template <typename T>
 inline void display(vec<T> const& v) {
   using namespace std;
 
@@ -100,8 +100,7 @@ class timer {
   }
 
  private:
-  static inline std::chrono::high_resolution_clock::time_point now =
-      std::chrono::high_resolution_clock::now();
+  static inline std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
 };
 
 #endif

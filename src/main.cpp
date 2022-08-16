@@ -1,18 +1,21 @@
-#include "example/semaphore2.h"
+// #include "example/semaphore2.h"
 // #include "example/read_write_channel.h"
 // #include "example/unsigned.h"
-// #include "./example/sort.h"
+// #include "example/sort.h"
+#include "dsal/linked_list.h"
 
 int main() {
   using namespace std;
 
-  test_semaphore2();
+  // test_semaphore2();
   // test_unsigned();
   // test_dispatcher();
   // test_slice();
   // test_bubble_sort();
   // test_quick_sort();
   // test_quick_sort_parallel();
+  test_singly_list();
+  test_find_max();
 
   return 0;
 }
