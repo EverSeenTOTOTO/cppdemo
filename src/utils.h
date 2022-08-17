@@ -5,7 +5,7 @@
 inline void expect(bool expr, std::string const& message) {
   if (!expr) {
     std::cout << "FAIL: " << message << std::endl;
-    throw new std::runtime_error(message);
+    throw std::runtime_error(message);
   } else {
     std::cout << "PASS: " << message << std::endl;
   }
@@ -25,6 +25,11 @@ void expect_eq(vec<T> const& a, vec<T> const& b, std::string const& message) {
 template <typename T, typename U>
 void expect_eq(T const& a, U const& b, std::string const& message) {
   expect(a == b, message);
+}
+
+template <typename S>
+void expect_match(S const& str, std::string const& re, std::string const& message) {
+  expect(std::regex_match(str, std::regex(re)), message);
 }
 
 template <typename Vec>

@@ -6,6 +6,7 @@
 #include <vector>
 #include <forward_list>
 #include <list>
+#include <stack>
 #include <queue>
 #include <regex>
 #include <chrono>

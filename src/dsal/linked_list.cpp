@@ -2,14 +2,14 @@
 #include "../utils.h"
 
 void test_singly_list() {
-  SinglyList<int> list;
+  singly_list<int> list;
 
   expect_eq(list.first(), nullptr, "empty singly_list.first()");
   expect_eq(list.last(), list.first(), "empty singly_list.last()");
   expect_eq(list.len(), 0, "empty singly_list.len()");
   expect_eq(list.empty(), true, "empty singly_list.empty()");
 
-  SinglyList<int> l2{1, 2, 3};
+  singly_list<int> l2{1, 2, 3};
   expect_eq(l2.first()->data, 1, "singly_list.first()");
   expect_eq(l2.last()->data, 3, "singly_list.last()");
   expect_eq(l2.len(), 3, "singly_list.len()");
@@ -29,14 +29,14 @@ void test_singly_list() {
   expect_eq(l2.first()->data, 1, "remove_all 0 singly_list.first()");
   expect_eq(l2.len(), 5, "remove_all 0 singly_list.len()");
 
-  SinglyList<int> l3{1, 2, 3, 4};
+  singly_list<int> l3{1, 2, 3, 4};
 
   l3.reverse();
   expect_eq(l3.first()->data, 4, "reverse singly_list.first()");
   expect_eq(l3.last()->data, 1, "reverse singly_list.last()");
 }
 
-SinglyList<int>::Node* find_max(SinglyList<int> const& l) {
+singly_list<int>::list_node* find_max(singly_list<int> const& l) {
   auto max = l.first();
   auto ptr = max;
 
@@ -49,7 +49,7 @@ SinglyList<int>::Node* find_max(SinglyList<int> const& l) {
 }
 
 void test_find_max() {
-  SinglyList<int> l{1, 2, 3, 3, 2, 1};
+  singly_list<int> l{1, 2, 3, 3, 2, 1};
 
   expect_eq(find_max(l)->data, 3, "find_max");
 

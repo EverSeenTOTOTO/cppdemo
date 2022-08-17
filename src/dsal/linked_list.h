@@ -1,24 +1,24 @@
 #include "../common.h"
 
 template <typename T>
-class SinglyList {
+class singly_list {
  public:
-  struct Node {
-    T     data;
-    Node* next = nullptr;
+  struct list_node {
+    T          data;
+    list_node* next = nullptr;
 
-    Node() = delete;
-    Node(T const& t) : data(t){};
+    list_node() = delete;
+    list_node(T const& t) : data(t){};
   };
 
-  SinglyList() = default;
-  SinglyList(std::initializer_list<T> list) {
+  singly_list() = default;
+  singly_list(std::initializer_list<T> list) {
     for (auto item : list) {
       append(item);
     }
   }
 
-  ~SinglyList() {
+  ~singly_list() {
     auto ptr = head;
 
     while (ptr != nullptr) {
@@ -30,7 +30,7 @@ class SinglyList {
     head = nullptr;
   }
 
-  auto first() const {
+  inline auto first() const {
     return head;
   }
 
@@ -49,14 +49,14 @@ class SinglyList {
     auto tail = last();
 
     if (tail) {
-      tail->next = new Node(value);
+      tail->next = new list_node(value);
     } else {
-      head = new Node(value);
+      head = new list_node(value);
     }
   }
 
   void prepend(T const& value) {
-    auto node = new Node(value);
+    auto node = new list_node(value);
 
     node->next = head;
     head       = node;
@@ -75,8 +75,8 @@ class SinglyList {
   }
 
   void remove_all(T const& value) {
-    Node* prev = nullptr;
-    auto  ptr  = head;
+    list_node* prev = nullptr;
+    auto       ptr  = head;
 
     while (ptr != nullptr) {
       if (ptr->data == value) {
@@ -97,14 +97,14 @@ class SinglyList {
     }
   }
 
-  bool empty() const {
+  inline bool empty() const {
     return head == nullptr;
   }
 
   void reverse() {
-    Node* tail = nullptr;
+    list_node* tail = nullptr;
 
-    std::function<void(Node*)> reverse_helper = [&tail, &reverse_helper](Node* node) {
+    std::function<void(list_node*)> reverse_helper = [&tail, &reverse_helper](list_node* node) {
       if (node && node->next) {
         reverse_helper(node->next);
         node->next->next = node;
@@ -119,10 +119,10 @@ class SinglyList {
   }
 
  private:
-  Node* head = nullptr;
+  list_node* head = nullptr;
 };
 
-SinglyList<int>::Node* find_max(SinglyList<int> const& l);
+singly_list<int>::list_node* find_max(singly_list<int> const& l);
 
 void test_singly_list();
 void test_find_max();

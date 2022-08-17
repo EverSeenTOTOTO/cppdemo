@@ -2,7 +2,8 @@
 // #include "example/read_write_channel.h"
 // #include "example/unsigned.h"
 // #include "example/sort.h"
-#include "dsal/linked_list.h"
+// #include "dsal/linked_list.h"
+#include "dsal/stack_queue.h"
 
 int main() {
   using namespace std;
@@ -14,8 +15,10 @@ int main() {
   // test_bubble_sort();
   // test_quick_sort();
   // test_quick_sort_parallel();
-  test_singly_list();
-  test_find_max();
+  // test_singly_list();
+  // test_find_max();
+  // test_base_conversion();
+  test_circular_deque();
 
   return 0;
 }
