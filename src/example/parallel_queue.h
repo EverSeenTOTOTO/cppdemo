@@ -26,10 +26,10 @@ class ParallelQueue {
     items->V();
   }
 
-  T const& read() {
+  auto read() {
     items->P();
     mutex->P();
-    T const& data = queue.front();
+    auto data = queue.front();
     queue.pop();
     mutex->V();
     slots->V();

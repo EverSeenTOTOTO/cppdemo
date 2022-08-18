@@ -40,40 +40,42 @@ class btree {
     return lchild == nullptr && rchild == nullptr;
   }
 
-  void pre_order(std::function<void(T)> const& callback) {
-    callback(data);
+  using callback = std::function<void(T)>;
+
+  void pre_order(callback const& cb) {
+    cb(data);
 
     if (lchild != nullptr) {
-      lchild->pre_order(callback);
+      lchild->pre_order(cb);
     }
 
     if (rchild != nullptr) {
-      rchild->pre_order(callback);
+      rchild->pre_order(cb);
     }
   }
 
-  void in_order(std::function<void(T)> const& callback) {
+  void in_order(callback const& cb) {
     if (lchild != nullptr) {
-      lchild->in_order(callback);
+      lchild->in_order(cb);
     }
 
-    callback(data);
+    cb(data);
 
     if (rchild != nullptr) {
-      rchild->in_order(callback);
+      rchild->in_order(cb);
     }
   }
 
-  void post_order(std::function<void(T)> const& callback) {
+  void post_order(callback const& cb) {
     if (lchild != nullptr) {
-      lchild->post_order(callback);
+      lchild->post_order(cb);
     }
 
     if (rchild != nullptr) {
-      rchild->post_order(callback);
+      rchild->post_order(cb);
     }
 
-    callback(data);
+    cb(data);
   }
 };
 
@@ -102,17 +104,6 @@ btree<T>* rebuild_btree(vec<T> const& in, vec<T> const& post) {
 
     return root;
   }
-};
-
-template <typename T>
-class weighted_data {
- public:
-  T      data;
-  size_t weight;
-
-  weighted_data() = delete;
-  weighted_data(size_t w) : weight(w) {}
-  weighted_data(T const& t, size_t w) : data(t), weight(w) {}
 };
 
 template <typename T>

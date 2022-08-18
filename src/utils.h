@@ -2,6 +2,17 @@
 #define UTILS_H
 #include "./common.h"
 
+template <typename T>
+class weighted_data {
+ public:
+  T      data;
+  size_t weight;
+
+  weighted_data() = delete;
+  weighted_data(size_t w) : weight(w) {}
+  weighted_data(T const& t, size_t w) : data(t), weight(w) {}
+};
+
 inline void expect(bool expr, std::string const& message) {
   if (!expr) {
     std::cout << "FAIL: " << message << std::endl;
