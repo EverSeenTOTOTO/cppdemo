@@ -1,17 +1,6 @@
 #include "../common.h"
 #include "../utils.h"
 
-template <typename T>
-vec<T>& slice(vec<T> const& vec, size_t begin, size_t length) {
-  auto      bit = vec.begin();
-  ::vec<T>* v   = new ::vec<T>;
-
-  for (size_t i = begin; v->size() < length && bit + i < vec.end(); ++i) {
-    v->push_back(*(bit + i));
-  }
-
-  return *v;
-}
 void test_slice();
 
 void bubble_sort(vec<int>& s);

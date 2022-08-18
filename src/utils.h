@@ -40,6 +40,27 @@ inline void swap(Vec& v, size_t a, size_t b) {
 }
 
 template <typename T>
+int find_index(vec<T> const& vec, T const& t) {
+  for (int i = 0; i < vec.size(); ++i) {
+    if (vec[i] == t) return i;
+  }
+
+  return -1;
+}
+
+template <typename T>
+vec<T>& slice(vec<T> const& vec, size_t begin, size_t length) {
+  auto      bit = vec.begin();
+  ::vec<T>* v   = new ::vec<T>;
+
+  for (size_t i = begin; v->size() < length && bit + i < vec.end(); ++i) {
+    v->push_back(*(bit + i));
+  }
+
+  return *v;
+}
+
+template <typename T>
 inline void display(vec<T> const& v) {
   using namespace std;
 

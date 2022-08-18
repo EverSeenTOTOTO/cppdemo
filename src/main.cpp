@@ -3,7 +3,8 @@
 // #include "example/unsigned.h"
 // #include "example/sort.h"
 // #include "dsal/linked_list.h"
-#include "dsal/stack_queue.h"
+// #include "dsal/stack_queue.h"
+#include "dsal/btree.h"
 
 int main() {
   using namespace std;
@@ -18,7 +19,10 @@ int main() {
   // test_singly_list();
   // test_find_max();
   // test_base_conversion();
-  test_circular_deque();
+  // test_circular_deque();
+  // test_btree();
+  // test_rebuild_btree();
+  test_build_huffman_tree();
 
   return 0;
 }

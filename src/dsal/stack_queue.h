@@ -30,7 +30,7 @@ class circular_deque {
     check_empty();
 
     T value = base[head];
-    head       = (head + 1) % capacity;
+    head    = (head + 1) % capacity;
 
     return value;
   }
@@ -67,13 +67,13 @@ class circular_deque {
   }
 
  protected:
-  void check_full() {
+  void check_full() const {
     if (full()) {
       throw std::runtime_error("queue is full");
     }
   }
 
-  void check_empty() {
+  void check_empty() const {
     if (empty()) {
       throw std::runtime_error("queue is empty");
     }
