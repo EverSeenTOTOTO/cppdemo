@@ -71,8 +71,8 @@ vec<T>& slice(vec<T> const& vec, size_t begin, size_t length) {
   return *v;
 }
 
-template <typename T>
-inline void display(vec<T> const& v) {
+template <typename Container>
+inline void display(Container const& v) {
   using namespace std;
 
   for_each(v.begin(), v.end(), [](auto x) { cout << x << "\t"; });

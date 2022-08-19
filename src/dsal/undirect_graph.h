@@ -1,84 +1,56 @@
 #include "../common.h"
 
-// 十字链表 orthogonal_list
+// 邻接多重表，adjacent_multilist
 template <typename V, typename E>
-class ol_edge;
+class aml_edge;
 template <typename V, typename E>
-class ol_graph;
+class aml_graph;
 
 template <typename V, typename E>
-class ol_node {
+class aml_node {
  public:
-  using node = ol_node<V, E>;
-  using edge = ol_edge<V, E>;
+  using node = aml_node<V, E>;
+  using edge = aml_edge<V, E>;
 
   V     data;
-  edge* first_in  = nullptr;  // 以此结点为tail的一条弧
-  edge* first_out = nullptr;  // 以此结点为head的一条弧
+  edge* linked = nullptr;
 
-  ol_node() = delete;
-  ol_node(V const& data) : data(data) {}
+  aml_node() = delete;
+  aml_node(V const& data) : data(data) {}
 
-  ~ol_node() {
-    auto ptr = first_in;
+  ~aml_node() {
+    auto ptr = linked;
 
     while (ptr != nullptr) {
-      auto next = ptr->tail_link;
+      auto next = ptr->head == this ? ptr->head_link : ptr->tail_link;
       ptr->remove_self();  // 移除ptr这条边
       delete ptr;
       ptr = next;
     }
 
-    ptr = first_out;
-
-    while (ptr != nullptr) {
-      auto next = ptr->head_link;
-      ptr->remove_self();
-      delete ptr;
-      ptr = next;
-    }
-
-    first_in = first_out = nullptr;
+    linked = nullptr;
   }
 
-  friend class ol_edge<V, E>;
-  friend class ol_graph<V, E>;
+  friend class aml_edge<V, E>;
+  friend class aml_graph<V, E>;
 
  protected:
-  void remove_out_edge(edge* out) {  // 从出边链表中删除一条边
-    auto  ptr  = first_out;
+  void remove_edge(edge* e) {  // 从linked链表中移除一条依附于此结点的边
+    auto  ptr  = linked;
     edge* prev = nullptr;
 
     while (ptr != nullptr) {
-      auto next = ptr->head_link;
+      auto next = ptr->head == this ? ptr->head_link : ptr->tail_link;
 
-      if (ptr == out) {
-        if (prev == nullptr) {  // ptr == first_out
-          first_out = next;
+      if (ptr == e) {
+        if (prev == nullptr) {  // ptr == linked
+          linked = next;
         } else {
-          prev->head_link = next;
-        }
-
-        break;
-      }
-
-      prev = ptr;
-      ptr  = next;
-    }
-  }
-
-  void remove_in_edge(edge* in) {
-    auto  ptr  = first_in;
-    edge* prev = nullptr;
-
-    while (ptr != nullptr) {
-      auto next = ptr->tail_link;
-
-      if (ptr == in) {
-        if (prev == nullptr) {  // ptr == first_in
-          first_in = next;
-        } else {
-          prev->tail_link = next;
+          if (prev->head == this) {
+            prev->head_link = next;
+          } else {
+            prev->tail_link = next;
+          }
         }
         break;
       }
@@ -90,41 +62,35 @@ class ol_node {
 };
 
 template <typename V, typename E>
-class ol_edge {
+class aml_edge {
  public:
-  using node = ol_node<V, E>;
-  using edge = ol_edge<V, E>;
+  using node = aml_node<V, E>;
+  using edge = aml_edge<V, E>;
 
   E     data;
-  node* head      = nullptr;  // 箭头起始
-  node* tail      = nullptr;  // 箭头指向
-  edge* head_link = nullptr;  // 头相同的另一条弧
-  edge* tail_link = nullptr;  // 尾相同的另一条弧
+  node* head      = nullptr;
+  node* tail      = nullptr;
+  edge* head_link = nullptr;
+  edge* tail_link = nullptr;
 
-  ol_edge() = delete;
-  ol_edge(E const& data) : data(data) {}
+  aml_edge() = delete;
+  aml_edge(E const& data) : data(data) {}
 
-  friend class ol_node<V, E>;
-  friend class ol_graph<V, E>;
+  friend class aml_node<V, E>;
+  friend class aml_graph<V, E>;
 
  protected:
-  void remove_self() {  // 从头和尾结点的first_out或first_in链表中移除自身
-    head->remove_out_edge(this);
-    tail->remove_in_edge(this);
+  void remove_self() {
+    head->remove_edge(this);
+    tail->remove_edge(this);
   }
 };
 
 template <typename V, typename E>
-class ol_graph {
+class aml_graph {
  public:
-  using node = ol_node<V, E>;
-  using edge = ol_edge<V, E>;
-
-  ~ol_graph() {
-    for (auto v : verts) {
-      delete v;
-    }
-  }
+  using node = aml_node<V, E>;
+  using edge = aml_edge<V, E>;
 
   inline size_t vert_count() const {
     return verts.size();
@@ -134,15 +100,15 @@ class ol_graph {
     size_t count = 0;
 
     for (auto v : verts) {
-      auto ptr = v->first_out;
+      auto ptr = v->linked;
 
       while (ptr != nullptr) {
-        count++;
-        ptr = ptr->head_link;
+        count += 1;
+        ptr = v == ptr->head ? ptr->head_link : ptr->tail_link;
       }
     }
 
-    return count;
+    return count / 2;
   }
 
   node* add_vert(V const& node_value) {
@@ -187,12 +153,12 @@ class ol_graph {
 
     auto e = new edge(edge_value);
 
-    e->head         = head;
-    e->tail         = tail;
-    e->head_link    = head->first_out;
-    e->tail_link    = tail->first_in;
-    head->first_out = e;
-    tail->first_in  = e;
+    e->head      = head;
+    e->tail      = tail;
+    e->head_link = head->linked;
+    e->tail_link = tail->linked;
+    head->linked = e;
+    tail->linked = e;
 
     return e;
   }
@@ -202,10 +168,16 @@ class ol_graph {
     auto tail = find_vert(to);
 
     if (head != nullptr && tail != nullptr) {
-      auto ptr = head->first_out;
+      auto ptr = head->linked;
 
-      while (ptr != nullptr && ptr->tail != tail) {
-        ptr = ptr->head_link;
+      while (ptr != nullptr) {
+        if (ptr->head == head) {
+          if (ptr->tail == tail) return ptr;
+          ptr = ptr->head_link;
+        } else {
+          if (ptr->head == tail) return ptr;
+          ptr = ptr->tail_link;
+        }
       }
 
       return ptr;
@@ -276,11 +248,13 @@ class ol_graph {
         tags.insert(top);
         cb(top->data);
 
-        auto out = top->first_out;
+        auto out = top->linked;
 
         while (out != nullptr) {
-          s.push(out->tail);
-          out = out->head_link;
+          bool isHead = out->head == top;
+
+          s.push(isHead ? out->tail : out->head);
+          out = isHead ? out->head_link : out->tail_link;
         }
       }
     }
@@ -300,11 +274,13 @@ class ol_graph {
         tags.insert(top);
         cb(top->data);
 
-        auto out = top->first_out;
+        auto out = top->linked;
 
         while (out != nullptr) {
-          q.push(out->tail);
-          out = out->head_link;
+          bool isHead = out->head == top;
+
+          q.push(isHead ? out->tail : out->head);
+          out = isHead ? out->head_link : out->tail_link;
         }
       }
     }
@@ -314,5 +290,5 @@ class ol_graph {
   std::list<node*> verts;
 };
 
-void test_ol_graph();
-void test_ol_graph_traverse();
+void test_aml_graph();
+void test_aml_graph_traverse();

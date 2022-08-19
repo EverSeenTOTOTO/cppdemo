@@ -6,6 +6,7 @@
 // #include "dsal/stack_queue.h"
 // #include "dsal/btree.h"
 #include "dsal/direct_graph.h"
+#include "dsal/undirect_graph.h"
 
 int main() {
   using namespace std;
@@ -26,6 +27,8 @@ int main() {
   // test_build_huffman_tree();
   test_ol_graph();
   test_ol_graph_traverse();
+  test_aml_graph();
+  test_aml_graph_traverse();
 
   return 0;
 }
