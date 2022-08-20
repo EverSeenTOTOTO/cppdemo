@@ -1,3 +1,6 @@
+#ifndef STACK_QUEUE_H 
+#define STACK_QUEUE_H
+
 #include "../common.h"
 
 vec<int>& base_convertion(int number, size_t base);
@@ -87,3 +90,6 @@ class circular_deque {
 };
 
 void test_circular_deque();
+
+
+#endif

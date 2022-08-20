@@ -35,6 +35,8 @@ clean:
 # 对每一个.cpp文件替换.cpp为.i，得到cppfiles
 cppfiles = $(patsubst %.cpp,%.i,$(wildcard src/dsal/*.cpp src/*.cpp))
 
+#### NOT USED BEGIN ####
+
 # 预处理
 # 对每一个.i文件，声明它依赖对应的.cpp文件，然后使用预处理命令cpp生成它。$< 代表第一个依赖文件，$@ 会对每一个目标依次执行
 $(cppfiles): %.i: %.cpp
@@ -55,8 +57,13 @@ cc1: $(asmfiles)
 objfiles = $(subst .i,.o,$(cppfiles))
 
 # 汇编
-$(objfiles): %.o: %.s
-	${AS} $< -o $@
+# $(objfiles): %.o: %.s
+# 	${AS} $< -o $@
+
+#### NOT USED END ####
+
+$(objfiles): %.o: %.cpp
+	${GCC} -c ${CPP_FLAGS} $< -o $@
 
 as: $(objfiles)
 

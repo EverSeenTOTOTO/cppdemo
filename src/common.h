@@ -1,3 +1,6 @@
+#ifndef COMMON_H 
+#define COMMON_H
+
 #include <ostream>
 #include <condition_variable>
 #include <iostream>
@@ -29,3 +32,6 @@
 
 template <typename T>
 using vec = std::vector<T>;
+
+
+#endif

@@ -7,6 +7,7 @@
 // #include "dsal/btree.h"
 #include "dsal/direct_graph.h"
 #include "dsal/undirect_graph.h"
+#include "dsal/graph.h"
 
 int main() {
   using namespace std;
@@ -29,6 +30,8 @@ int main() {
   test_ol_graph_traverse();
   test_aml_graph();
   test_aml_graph_traverse();
+  test_prim_mst();
+  test_kruskal_mst();
 
   return 0;
 }

@@ -1,3 +1,6 @@
+#ifndef UNDIRECT_GRAPH_H
+#define UNDIRECT_GRAPH_H
+
 #include "../common.h"
 
 // 邻接多重表，adjacent_multilist
@@ -11,6 +14,7 @@ class aml_node {
  public:
   using node = aml_node<V, E>;
   using edge = aml_edge<V, E>;
+  using type = V;
 
   V     data;
   edge* linked = nullptr;
@@ -66,6 +70,7 @@ class aml_edge {
  public:
   using node = aml_node<V, E>;
   using edge = aml_edge<V, E>;
+  using type = E;
 
   E     data;
   node* head      = nullptr;
@@ -89,11 +94,17 @@ class aml_edge {
 template <typename V, typename E>
 class aml_graph {
  public:
-  using node = aml_node<V, E>;
-  using edge = aml_edge<V, E>;
+  using node  = aml_node<V, E>;
+  using edge  = aml_edge<V, E>;
+  using vtype = typename node::type;
+  using etype = typename edge::type;
 
   inline size_t vert_count() const {
     return verts.size();
+  }
+
+  inline std::list<node*> const& get_verts() const {
+    return verts;
   }
 
   size_t edge_count() const {
@@ -292,3 +303,5 @@ class aml_graph {
 
 void test_aml_graph();
 void test_aml_graph_traverse();
+
+#endif

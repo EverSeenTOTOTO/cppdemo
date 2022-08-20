@@ -5,43 +5,13 @@
 template <typename T>
 class weighted_data {
  public:
-  T      data;
-  size_t weight;
+  T   data;
+  int weight;
 
   weighted_data() = delete;
-  weighted_data(size_t w) : weight(w) {}
-  weighted_data(T const& t, size_t w) : data(t), weight(w) {}
+  weighted_data(int w) : weight(w) {}
+  weighted_data(T const& t, int w) : data(t), weight(w) {}
 };
-
-inline void expect(bool expr, std::string const& message) {
-  if (!expr) {
-    std::cout << "FAIL: " << message << std::endl;
-    throw std::runtime_error(message);
-  } else {
-    std::cout << "PASS: " << message << std::endl;
-  }
-}
-
-inline void expect_not(bool expr, std::string const& message) {
-  expect(!expr, message);
-}
-
-template <typename T>
-void expect_eq(vec<T> const& a, vec<T> const& b, std::string const& message) {
-  auto p = std::mismatch(a.begin(), a.end(), b.begin());
-
-  expect(a.size() == b.size() && p.first == a.end() && p.second == b.end(), message);
-}
-
-template <typename T, typename U>
-void expect_eq(T const& a, U const& b, std::string const& message) {
-  expect(a == b, message);
-}
-
-template <typename S>
-void expect_match(S const& str, std::string const& re, std::string const& message) {
-  expect(std::regex_match(str, std::regex(re)), message);
-}
 
 template <typename Vec>
 inline void swap(Vec& v, size_t a, size_t b) {
@@ -87,6 +57,46 @@ inline vec<int>& range(int from, int to) {
   }
 
   return *v;
+}
+
+template <typename T>
+bool equals_to(vec<T> const& a, vec<T> const& b) {
+  if (a.size() != b.size()) return false;
+
+  auto p = std::mismatch(a.begin(), a.end(), b.begin());
+
+  return p.first == a.end() && p.second == b.end();
+}
+
+template <typename T>
+bool equals_to(std::set<T> const& a, std::set<T> const& b) {
+  if (a.size() != b.size()) return false;
+
+  for (auto value : a) {
+    if (b.find(value) == b.end()) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+template <typename K, typename V>
+bool equals_to(std::map<K, V> const& a, std::map<K, V> const& b) {
+  if (a.size() != b.size()) return false;
+
+  for (auto const& [key, value] : a) {
+    if (!equals_to(b.at(key), value)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+template <typename T, typename U>
+bool equals_to(T const& a, T const& b) {
+  return a == b;
 }
 
 inline int random_integer(int from, int to) {
@@ -139,5 +149,28 @@ class timer {
  private:
   static inline std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
 };
+
+inline void expect(bool expr, std::string const& message) {
+  if (!expr) {
+    std::cout << "FAIL: " << message << std::endl;
+    throw std::runtime_error(message);
+  } else {
+    std::cout << "PASS: " << message << std::endl;
+  }
+}
+
+inline void expect_not(bool expr, std::string const& message) {
+  expect(!expr, message);
+}
+
+template <typename T, typename U>
+void expect_eq(T a, U b, std::string const& message) {
+  expect(equals_to<T, U>(a, b), message);
+}
+
+template <typename S>
+void expect_match(S const& str, std::string const& re, std::string const& message) {
+  expect(std::regex_match(str, std::regex(re)), message);
+}
 
 #endif

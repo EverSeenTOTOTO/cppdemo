@@ -1,3 +1,6 @@
+#ifndef BTREE_H
+#define BTREE_H
+
 #include "../common.h"
 #include "../utils.h"
 
@@ -109,8 +112,8 @@ btree<T>* rebuild_btree(vec<T> const& in, vec<T> const& post) {
 template <typename T>
 class huffman_tree : public btree<weighted_data<T>> {
  public:
-  huffman_tree(size_t w) : btree<weighted_data<T>>(weighted_data<T>(w)) {}
-  huffman_tree(T const& t, size_t w) : btree<weighted_data<T>>(weighted_data<T>(t, w)) {}
+  huffman_tree(int w) : btree<weighted_data<T>>(weighted_data<T>(w)) {}
+  huffman_tree(T const& t, int w) : btree<weighted_data<T>>(weighted_data<T>(t, w)) {}
 };
 
 template <typename T>
@@ -140,3 +143,5 @@ huffman_tree<T>* build_huffman_tree(vec<huffman_tree<T>*> const& forest) {
 void test_btree();
 void test_rebuild_btree();
 void test_build_huffman_tree();
+
+#endif

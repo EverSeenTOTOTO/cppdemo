@@ -1,3 +1,6 @@
+#ifndef LINKED_LIST_H 
+#define LINKED_LIST_H
+
 #include "../common.h"
 
 template <typename T>
@@ -126,3 +129,6 @@ singly_list<int>::list_node* find_max(singly_list<int> const& l);
 
 void test_singly_list();
 void test_find_max();
+
+
+#endif

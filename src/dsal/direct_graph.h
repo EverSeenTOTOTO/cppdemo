@@ -1,3 +1,6 @@
+#ifndef DIRECT_GRAPH_H
+#define DIRECT_GRAPH_H
+
 #include "../common.h"
 
 // 十字链表 orthogonal_list
@@ -11,6 +14,7 @@ class ol_node {
  public:
   using node = ol_node<V, E>;
   using edge = ol_edge<V, E>;
+  using type = V;
 
   V     data;
   edge* first_in  = nullptr;  // 以此结点为tail的一条弧
@@ -94,6 +98,7 @@ class ol_edge {
  public:
   using node = ol_node<V, E>;
   using edge = ol_edge<V, E>;
+  using type = E;
 
   E     data;
   node* head      = nullptr;  // 箭头起始
@@ -117,8 +122,10 @@ class ol_edge {
 template <typename V, typename E>
 class ol_graph {
  public:
-  using node = ol_node<V, E>;
-  using edge = ol_edge<V, E>;
+  using node  = ol_node<V, E>;
+  using edge  = ol_edge<V, E>;
+  using vtype = typename node::type;
+  using etype = typename edge::type;
 
   ~ol_graph() {
     for (auto v : verts) {
@@ -128,6 +135,10 @@ class ol_graph {
 
   inline size_t vert_count() const {
     return verts.size();
+  }
+
+  inline std::list<node*> const& get_verts() const {
+    return verts;
   }
 
   size_t edge_count() const {
@@ -316,3 +327,5 @@ class ol_graph {
 
 void test_ol_graph();
 void test_ol_graph_traverse();
+
+#endif

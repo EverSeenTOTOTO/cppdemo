@@ -1,3 +1,6 @@
+#ifndef SORT_H 
+#define SORT_H
+
 #include "../common.h"
 #include "../utils.h"
 
@@ -11,3 +14,6 @@ void test_quick_sort();
 
 void quick_sort_parallel(vec<int>& s);
 void test_quick_sort_parallel();
+
+
+#endif
