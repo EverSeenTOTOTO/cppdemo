@@ -32,6 +32,8 @@ int main() {
   test_aml_graph_traverse();
   test_prim_mst();
   test_kruskal_mst();
+  test_dijkstra_shortest_path();
+  test_floyd_shortest_path();
 
   return 0;
 }

@@ -2,15 +2,18 @@
 #define UTILS_H
 #include "./common.h"
 
-template <typename T>
+template <typename T, typename W = int>
 class weighted_data {
  public:
-  T   data;
-  int weight;
+  using data_type   = T;
+  using weight_type = W;
+
+  T data;
+  W weight;
 
   weighted_data() = delete;
-  weighted_data(int w) : weight(w) {}
-  weighted_data(T const& t, int w) : data(t), weight(w) {}
+  weighted_data(W w) : weight(w) {}
+  weighted_data(T const& t, W w) : data(t), weight(w) {}
 };
 
 template <typename Vec>

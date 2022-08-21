@@ -23,16 +23,24 @@ class aml_node {
   aml_node(V const& data) : data(data) {}
 
   ~aml_node() {
-    auto ptr = linked;
-
-    while (ptr != nullptr) {
-      auto next = ptr->head == this ? ptr->head_link : ptr->tail_link;
-      ptr->remove_self();  // 移除ptr这条边
-      delete ptr;
-      ptr = next;
+    for (auto e : get_linked_edges()) {
+      e->remove_self();
+      delete e;
     }
 
     linked = nullptr;
+  }
+
+  std::list<edge*> const& get_linked_edges() const {
+    auto ptr   = linked;
+    auto edges = new std::list<edge*>;
+
+    while (ptr != nullptr) {
+      edges->push_back(ptr);
+      ptr = ptr->head == this ? ptr->head_link : ptr->tail_link;
+    }
+
+    return *edges;
   }
 
   friend class aml_edge<V, E>;
@@ -111,12 +119,7 @@ class aml_graph {
     size_t count = 0;
 
     for (auto v : verts) {
-      auto ptr = v->linked;
-
-      while (ptr != nullptr) {
-        count += 1;
-        ptr = v == ptr->head ? ptr->head_link : ptr->tail_link;
-      }
+      count += v->get_linked_edges().size();
     }
 
     return count / 2;
@@ -134,7 +137,7 @@ class aml_graph {
     return v;
   }
 
-  node* find_vert(V const& node_value) {
+  node* find_vert(V const& node_value) const {
     for (auto v : verts) {
       if (v->data == node_value) {
         return v;
@@ -174,24 +177,20 @@ class aml_graph {
     return e;
   }
 
-  edge* find_edge(V const& from, V const& to) {
+  edge* find_edge(V const& from, V const& to) const {
     auto head = find_vert(from);
     auto tail = find_vert(to);
 
     if (head != nullptr && tail != nullptr) {
-      auto ptr = head->linked;
+      for (auto e : head->get_linked_edges()) {
+        if (e->head == head && e->tail == tail) {
+          return e;
+        }
 
-      while (ptr != nullptr) {
-        if (ptr->head == head) {
-          if (ptr->tail == tail) return ptr;
-          ptr = ptr->head_link;
-        } else {
-          if (ptr->head == tail) return ptr;
-          ptr = ptr->tail_link;
+        if (e->head == tail && e->tail == head) {
+          return e;
         }
       }
-
-      return ptr;
     }
 
     return nullptr;
@@ -259,13 +258,8 @@ class aml_graph {
         tags.insert(top);
         cb(top->data);
 
-        auto out = top->linked;
-
-        while (out != nullptr) {
-          bool isHead = out->head == top;
-
-          s.push(isHead ? out->tail : out->head);
-          out = isHead ? out->head_link : out->tail_link;
+        for (auto e : top->get_linked_edges()) {
+          s.push(e->head == top ? e->tail : e->head);
         }
       }
     }
@@ -285,13 +279,8 @@ class aml_graph {
         tags.insert(top);
         cb(top->data);
 
-        auto out = top->linked;
-
-        while (out != nullptr) {
-          bool isHead = out->head == top;
-
-          q.push(isHead ? out->tail : out->head);
-          out = isHead ? out->head_link : out->tail_link;
+        for (auto e : top->get_linked_edges()) {
+          q.push(e->head == top ? e->tail : e->head);
         }
       }
     }

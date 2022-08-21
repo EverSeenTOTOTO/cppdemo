@@ -24,25 +24,41 @@ class ol_node {
   ol_node(V const& data) : data(data) {}
 
   ~ol_node() {
-    auto ptr = first_in;
-
-    while (ptr != nullptr) {
-      auto next = ptr->tail_link;
-      ptr->remove_self();  // 移除ptr这条边
-      delete ptr;
-      ptr = next;
+    for (auto e : get_out_edges()) {
+      e->remove_self();
+      delete e;
     }
 
-    ptr = first_out;
-
-    while (ptr != nullptr) {
-      auto next = ptr->head_link;
-      ptr->remove_self();
-      delete ptr;
-      ptr = next;
+    for (auto e : get_in_edges()) {
+      e->remove_self();
+      delete e;
     }
 
     first_in = first_out = nullptr;
+  }
+
+  std::list<edge*> const& get_out_edges() const {
+    auto ptr   = first_out;
+    auto edges = new std::list<edge*>;
+
+    while (ptr != nullptr) {
+      edges->push_back(ptr);
+      ptr = ptr->head_link;
+    }
+
+    return *edges;
+  }
+
+  std::list<edge*> const& get_in_edges() const {
+    auto ptr   = first_in;
+    auto edges = new std::list<edge*>;
+
+    while (ptr != nullptr) {
+      edges->push_back(ptr);
+      ptr = ptr->tail_link;
+    }
+
+    return *edges;
   }
 
   friend class ol_edge<V, E>;
@@ -145,12 +161,7 @@ class ol_graph {
     size_t count = 0;
 
     for (auto v : verts) {
-      auto ptr = v->first_out;
-
-      while (ptr != nullptr) {
-        count++;
-        ptr = ptr->head_link;
-      }
+      count += v->get_out_edges().size();
     }
 
     return count;
@@ -168,7 +179,7 @@ class ol_graph {
     return v;
   }
 
-  node* find_vert(V const& node_value) {
+  node* find_vert(V const& node_value) const {
     for (auto v : verts) {
       if (v->data == node_value) {
         return v;
@@ -208,18 +219,16 @@ class ol_graph {
     return e;
   }
 
-  edge* find_edge(V const& from, V const& to) {
+  edge* find_edge(V const& from, V const& to) const {
     auto head = find_vert(from);
     auto tail = find_vert(to);
 
     if (head != nullptr && tail != nullptr) {
-      auto ptr = head->first_out;
-
-      while (ptr != nullptr && ptr->tail != tail) {
-        ptr = ptr->head_link;
+      for (auto e : head->get_out_edges()) {
+        if (e->tail == tail) {
+          return e;
+        }
       }
-
-      return ptr;
     }
 
     return nullptr;
@@ -287,11 +296,8 @@ class ol_graph {
         tags.insert(top);
         cb(top->data);
 
-        auto out = top->first_out;
-
-        while (out != nullptr) {
-          s.push(out->tail);
-          out = out->head_link;
+        for (auto e : top->get_out_edges()) {
+          s.push(e->tail);
         }
       }
     }
@@ -311,11 +317,8 @@ class ol_graph {
         tags.insert(top);
         cb(top->data);
 
-        auto out = top->first_out;
-
-        while (out != nullptr) {
-          q.push(out->tail);
-          out = out->head_link;
+        for (auto e : top->get_out_edges()) {
+          q.push(e->tail);
         }
       }
     }
