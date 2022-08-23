@@ -34,6 +34,7 @@ int main() {
   test_kruskal_mst();
   test_dijkstra_shortest_path();
   test_floyd_shortest_path();
+  test_topo_sort();
 
   return 0;
 }

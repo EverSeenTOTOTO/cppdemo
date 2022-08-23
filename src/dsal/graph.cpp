@@ -89,3 +89,30 @@ void test_floyd_shortest_path() {
   expect_eq(cost.at(g.find_vert("v4")), 30, "floyd v4");
   expect_eq(cost.at(g.find_vert("v5")), 60, "floyd v5");
 }
+
+void test_topo_sort() {
+  ol_graph<std::string, int> g;
+
+  g.add_edge(0, "v1", "v2");
+  g.add_edge(1, "v1", "v3");
+  g.add_edge(2, "v1", "v4");
+  g.add_edge(3, "v3", "v2");
+  g.add_edge(4, "v4", "v5");
+  g.add_edge(5, "v6", "v4");
+  g.add_edge(6, "v6", "v5");
+
+  auto verts = topo_sort(g);
+
+  vec<std::string> vs;
+
+  std::for_each(verts.begin(), verts.end(), [&vs](auto x) { vs.push_back(x->data); });
+
+  expect_eq(vs, vec<std::string>{"v6", "v1", "v3", "v2", "v4", "v5"}, "test topo_sort()");
+
+  g.add_edge(7, "v3", "v6");
+
+  verts = topo_sort(g);
+  vs.clear();
+  std::for_each(verts.begin(), verts.end(), [&vs](auto x) { vs.push_back(x->data); });
+  expect_eq(vs, vec<std::string>{"v1", "v3", "v2", "v6", "v4", "v5"}, "test topo_sort()");
+}

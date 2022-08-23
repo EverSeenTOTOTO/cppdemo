@@ -291,7 +291,52 @@ auto floyd_shortest_path(wol_graph<V, E> const& g, V const& start) -> std::map<t
 }
 
 // topology sort
-void topo_sort();
+template <typename V, typename E>
+auto topo_sort(ol_graph<V, E> const& g) -> std::list<typename ol_graph<V, E>::node*> const& {
+  using node = typename ol_graph<V, E>::node;
+  using edge = typename ol_graph<V, E>::edge;
+
+  std::stack<node*>       zeroInNodes;
+  std::map<node*, size_t> inDegrees;
+
+  auto verts  = g.get_verts();
+  auto result = new std::list<node*>;
+
+  for (auto v : g.get_verts()) {
+    auto inDegree = v->get_in_edges().size();
+
+    inDegrees.insert_or_assign(v, inDegree);
+
+    if (inDegree == 0) {
+      zeroInNodes.push(v);
+    }
+  }
+
+  while (!zeroInNodes.empty()) {
+    auto top = zeroInNodes.top();
+
+    zeroInNodes.pop();
+    result->push_back(top);
+
+    auto out = top->get_out_edges();
+
+    for (auto e : out) {
+      auto newDegree = inDegrees.at(e->tail) - 1;
+
+      inDegrees.insert_or_assign(e->tail, newDegree);
+
+      if (newDegree == 0) {
+        zeroInNodes.push(e->tail);
+      }
+    }
+  }
+
+  if (result->size() < g.vert_count()) {
+    throw std::runtime_error("cirular nodes deteted");
+  }
+
+  return *result;
+};
 
 // critical path
 void critical_path();
