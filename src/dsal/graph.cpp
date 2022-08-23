@@ -116,3 +116,29 @@ void test_topo_sort() {
   std::for_each(verts.begin(), verts.end(), [&vs](auto x) { vs.push_back(x->data); });
   expect_eq(vs, vec<std::string>{"v1", "v3", "v2", "v6", "v4", "v5"}, "test topo_sort()");
 }
+
+void test_critical_path() {
+  using etype = typename wol_graph<std::string, std::string, size_t>::etype;
+
+  wol_graph<std::string, std::string, size_t> g;
+
+  g.add_edge(etype("a1", 6), "v0", "v1");
+  g.add_edge(etype("a2", 4), "v0", "v2");
+  g.add_edge(etype("a3", 5), "v0", "v3");
+  g.add_edge(etype("a4", 1), "v1", "v4");
+  g.add_edge(etype("a5", 1), "v2", "v4");
+  g.add_edge(etype("a6", 2), "v3", "v5");
+  g.add_edge(etype("a7", 9), "v4", "v6");
+  g.add_edge(etype("a8", 7), "v4", "v7");
+  g.add_edge(etype("a9", 4), "v5", "v7");
+  g.add_edge(etype("a10", 2), "v6", "v8");
+  g.add_edge(etype("a11", 4), "v7", "v8");
+
+  auto paths = critical_path(g);
+
+  std::set<std::string> edges;
+
+  std::for_each(paths.begin(), paths.end(), [&](auto e) { edges.insert(e->data.data); });
+
+  expect_eq(edges, std::set<std::string>{"a1", "a4", "a7", "a8", "a10", "a11"}, "test critical_path()");
+}

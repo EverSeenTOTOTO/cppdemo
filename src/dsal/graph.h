@@ -6,11 +6,11 @@
 #include "../utils.h"
 
 // 边带权图
-template <typename V, typename E>
-using wol_graph = ol_graph<V, weighted_data<E>>;
+template <typename V, typename E, typename W = int>
+using wol_graph = ol_graph<V, weighted_data<E, W>>;
 
-template <typename V, typename E>
-using waml_graph = aml_graph<V, weighted_data<E>>;
+template <typename V, typename E, typename W = int>
+using waml_graph = aml_graph<V, weighted_data<E, W>>;
 
 // minimum cost spanning tree
 template <typename V, typename E>
@@ -282,7 +282,7 @@ auto floyd_shortest_path(wol_graph<V, E> const& g, V const& start) -> std::map<t
   }
 
   for (auto& [k, v] : cost) {
-    if (k != from) {  // redundant
+    if (k != from) {  // TODO: redundant
       delete v;
     }
   }
@@ -318,15 +318,15 @@ auto topo_sort(ol_graph<V, E> const& g) -> std::list<typename ol_graph<V, E>::no
     zeroInNodes.pop();
     result->push_back(top);
 
-    auto out = top->get_out_edges();
+    auto out = top->get_out_nodes();
 
-    for (auto e : out) {
-      auto newDegree = inDegrees.at(e->tail) - 1;
+    for (auto tail : out) {
+      auto newDegree = inDegrees.at(tail) - 1;
 
-      inDegrees.insert_or_assign(e->tail, newDegree);
+      inDegrees.insert_or_assign(tail, newDegree);
 
       if (newDegree == 0) {
-        zeroInNodes.push(e->tail);
+        zeroInNodes.push(tail);
       }
     }
   }
@@ -339,7 +339,76 @@ auto topo_sort(ol_graph<V, E> const& g) -> std::list<typename ol_graph<V, E>::no
 };
 
 // critical path
-void critical_path();
+template <typename V, typename E>
+auto critical_path(wol_graph<V, E, size_t> const& g) -> std::list<typename wol_graph<V, E, size_t>::edge*> const& {
+  using event  = typename wol_graph<V, E, size_t>::node;
+  using action = typename wol_graph<V, E, size_t>::edge;
+
+  std::map<event*, size_t> earliestStartTimeOfEvent;  // 事件最早开始时间
+  std::map<event*, size_t> latestStartTimeOfEvent;    // 事件最迟开始时间
+
+  auto topoSeq   = topo_sort(g);    // 拓扑序列
+  auto lastEvent = topoSeq.back();  // 汇点
+
+  // 初始化每个事件的最早开始时间为0
+  for (auto evt : topoSeq) {
+    earliestStartTimeOfEvent.insert_or_assign(evt, 0);
+  }
+
+  for (auto evt : topoSeq) {
+    auto requiredTime = earliestStartTimeOfEvent.at(evt);
+
+    //更新依赖evt的事件的最早开始时间
+    for (auto e : evt->get_out_edges()) {
+      auto maxStartTime = earliestStartTimeOfEvent.at(e->tail);  // 已有的最早开始时间
+      auto startTime    = requiredTime + e->data.weight;         // 此依赖路径导致的最早开始时间
+
+      //后续事件须等待此事件完成
+      earliestStartTimeOfEvent.insert_or_assign(e->tail, std::max(maxStartTime, startTime));
+    }
+  }
+
+  // 初始化每个事件的最迟开始时间为汇点的最早发生时间
+  for (auto evt : topoSeq) {
+    latestStartTimeOfEvent.insert_or_assign(evt, earliestStartTimeOfEvent.at(lastEvent));
+  }
+
+  decltype(topoSeq) reversed;
+
+  for (auto evt : topoSeq) {
+    reversed.push_front(evt);
+  }
+
+  for (auto evt : reversed) {
+    vec<size_t> startTimes;  // 记录所有依赖此事件的事件的最晚开始时间减去活动耗时的值
+
+    for (auto e : evt->get_out_edges()) {
+      startTimes.push_back(latestStartTimeOfEvent.at(e->tail) - e->data.weight);
+    }
+
+    if (startTimes.size() > 0) {
+      std::sort(startTimes.begin(), startTimes.end());
+
+      // 此事件的最晚开始时间为其中最早的一个
+      latestStartTimeOfEvent.insert_or_assign(evt, startTimes[0]);
+    }
+  }
+
+  auto result = new std::list<action*>;
+
+  for (auto evt : topoSeq) {
+    for (auto e : evt->get_out_edges()) {
+      auto earliestStartTime = earliestStartTimeOfEvent.at(evt);                     //活动的最早开始时间等于其前置事件的最早开始时间
+      auto latestStartTime   = latestStartTimeOfEvent.at(e->tail) - e->data.weight;  //活动的最晚开始时间为其后置事件的最晚开始时间减去活动耗时
+
+      if (earliestStartTime == latestStartTime) {  //关键活动
+        result->push_back(e);
+      }
+    }
+  }
+
+  return *result;
+};
 
 void test_prim_mst();
 void test_kruskal_mst();

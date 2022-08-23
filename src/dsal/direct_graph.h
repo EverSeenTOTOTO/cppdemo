@@ -61,6 +61,30 @@ class ol_node {
     return *edges;
   }
 
+  std::set<node*> get_out_nodes() const {
+    auto ptr   = first_out;
+    auto nodes = new std::set<node*>;
+
+    while (ptr != nullptr) {
+      nodes->insert(ptr->tail);
+      ptr = ptr->head_link;
+    }
+
+    return *nodes;
+  }
+
+  std::set<node*> get_in_nodes() const {
+    auto ptr   = first_in;
+    auto nodes = new std::set<node*>;
+
+    while (ptr != nullptr) {
+      nodes->insert(ptr->head);
+      ptr = ptr->tail_link;
+    }
+
+    return *nodes;
+  }
+
   friend class ol_edge<V, E>;
   friend class ol_graph<V, E>;
 
@@ -296,8 +320,8 @@ class ol_graph {
         tags.insert(top);
         cb(top->data);
 
-        for (auto e : top->get_out_edges()) {
-          s.push(e->tail);
+        for (auto tail : top->get_out_nodes()) {
+          s.push(tail);
         }
       }
     }
@@ -317,8 +341,8 @@ class ol_graph {
         tags.insert(top);
         cb(top->data);
 
-        for (auto e : top->get_out_edges()) {
-          q.push(e->tail);
+        for (auto tail : top->get_out_nodes()) {
+          q.push(tail);
         }
       }
     }

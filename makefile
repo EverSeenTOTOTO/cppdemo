@@ -20,6 +20,7 @@ CPP_FLAGS = -g\
 	-O0\
 	-pipe\
 	-std=c++2a\
+	-pthread\
 	-fdiagnostics-color=always
 
 .PHONY: prepare
@@ -50,7 +51,7 @@ asmfiles = $(subst .i,.s,$(cppfiles))
 
 # 编译
 $(asmfiles): %.s: %.i
-	${GCC} -S ${CPP_FLAGS} $< -o $@
+	${GCC} -S $< -o $@
 
 cc1: $(asmfiles)
 
@@ -63,14 +64,14 @@ objfiles = $(subst .i,.o,$(cppfiles))
 #### NOT USED END ####
 
 $(objfiles): %.o: %.cpp
-	${GCC} -c ${CPP_FLAGS} $< -o $@
+	${GCC} ${CPP_FLAGS} -c $< -o $@
 
 as: $(objfiles)
 
 # 链接
 .PHONY: build
 build: clean $(objfiles)
-	${GCC} -fuse-ld=lld -v -Xlinker --warn-common -o main.out $(objfiles)
+	${GCC} ${CPP_FLAGS} -v -Xlinker --warn-common -o main.out $(objfiles)
 	@echo -e '\n\033[1;32m Built main.out. \033[0m'
 
 .PHONY: start

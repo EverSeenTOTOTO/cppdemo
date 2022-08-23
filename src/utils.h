@@ -12,8 +12,8 @@ class weighted_data {
   W weight;
 
   weighted_data() = delete;
-  weighted_data(W w) : weight(w) {}
-  weighted_data(T const& t, W w) : data(t), weight(w) {}
+  weighted_data(W const& w) : weight(w) {}
+  weighted_data(T const& t, W const& w) : data(t), weight(w) {}
 };
 
 template <typename Vec>
