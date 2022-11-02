@@ -11,10 +11,46 @@ void test_slice() {
   expect_eq(slice(v, 4, 0), vec<int>{}, "test slice 4 0");
 }
 
+static vec<int> demo{97, 78, 65, 49, 49, 13, 27, 38};
+static vec<int> result{13, 27, 38, 49, 49, 65, 78, 97};
+
+void insert_sort(vec<int>& s) {
+  for (auto i = 1; i < s.size(); ++i) {
+    if (s[i] < s[i - 1]) {
+      int temp = s[i];
+      s[i]     = s[i - 1];  // right shift s[i-1]
+
+      // find insert place
+      auto j = i - 2;
+      for (; j >= 0 && s[j] > temp; --j) {
+        s[j + 1] = s[j];  // right shift s[j]
+      }
+      // insert
+      s[j + 1] = temp;
+    }
+  }
+}
+
+void test_insert_sort() {
+  using namespace std;
+
+  auto s = range(5, 0);
+
+  insert_sort(s);
+  expect_eq(s, range(1, 6), "test insert_sort");
+
+  auto clone = slice(demo, 0, demo.size());
+
+  insert_sort(clone);
+  expect_eq(clone, result, "test insert_sort demo");
+}
+
 void bubble_sort(vec<int>& s) {
   for (auto i = 0; i < s.size(); ++i) {
     for (auto j = i + 1; j < s.size(); ++j) {
-      if (s[i] > s[j]) { swap(s, i, j); }
+      if (s[i] > s[j]) {
+        swap(s, i, j);
+      }
     }
   }
 }
@@ -25,9 +61,12 @@ void test_bubble_sort() {
   auto s = range(5, 0);
 
   bubble_sort(s);
-  display(s);
-
   expect_eq(s, range(1, 6), "test bubble_sort");
+
+  auto clone = slice(demo, 0, demo.size());
+
+  bubble_sort(clone);
+  expect_eq(clone, result, "test bubble_sort demo");
 }
 
 int partition(vec<int>& s, int begin, int end, int pivot_offset) {
@@ -68,40 +107,55 @@ void test_quick_sort() {
   auto s = range(5, 0);
 
   quick_sort(s);
-  display(s);
-
   expect_eq(s, range(1, 6), "test quick_sort");
+
+  auto clone = slice(demo, 0, demo.size());
+
+  quick_sort(clone);
+  expect_eq(clone, result, "test quick_sort demo");
 }
 
-void quick_sort_parallel_helper(vec<int>& s, int begin, int end) {
-  if (end - begin >= 1) {
-    int r = partition(s, begin, end, 0);  // set the first element as pivot
+// 大根堆
+void adjust_heap(vec<int>& h, int root, int len) {
+  if (root >= len) return;
 
-    auto p = std::async(std::launch::async, [&]() { quick_sort_helper(s, begin, r - 1); });
+  auto lidx   = 2 * root;
+  auto ridx   = lidx + 1;
+  auto lchild = lidx >= len ? -1 : h[lidx];
+  auto rchild = ridx >= len ? -1 : h[ridx];
 
-    quick_sort_helper(s, r + 1, end);
-    p.wait();
+  if (h[root] < std::max(lchild, rchild)) {
+    if (lchild > rchild) {
+      swap(h, root, lidx);
+      adjust_heap(h, lidx, len);
+    } else {
+      swap(h, root, ridx);
+      adjust_heap(h, ridx, len);
+    }
   }
 }
 
-void quick_sort_parallel(vec<int>& v) {
-  return quick_sort_parallel_helper(v, 0, v.size() - 1);
+void heap_sort(vec<int>& s) {
+  for (auto i = std::floor(s.size() / 2) - 1; i >= 0; --i) {
+    adjust_heap(s, i, s.size() - 1);
+  }
+
+  for (auto i = s.size() - 1; i > 0; --i) {
+    swap(s, 0, i);
+    adjust_heap(s, 0, i);
+  }
 }
 
-void test_quick_sort_parallel() {
-  timer::reset();
+void test_heap_sort() {
+  using namespace std;
 
-  auto s = range(5e6, 0);
+  auto s = range(5, 0);
 
-  timer::report("sync");
-  quick_sort(s);
-  expect_eq(s[0], 1, "test quick_sort sync");
-  timer::report("sync done");
+  heap_sort(s);
+  expect_eq(s, range(1, 6), "test heap_sort");
 
-  s = range(5e6, 0);
+  auto clone = slice(demo, 0, demo.size());
 
-  timer::report("async");
-  quick_sort_parallel(s);
-  expect_eq(s[0], 1, "test quick_sort async");
-  timer::report("async done");
+  heap_sort(clone);
+  expect_eq(clone, result, "test heap_sort demo");
 }
