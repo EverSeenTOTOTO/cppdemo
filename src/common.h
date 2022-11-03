@@ -1,4 +1,4 @@
-#ifndef COMMON_H 
+#ifndef COMMON_H
 #define COMMON_H
 
 #include <ostream>
@@ -32,6 +32,5 @@
 
 template <typename T>
 using vec = std::vector<T>;
-
 
 #endif

@@ -1,5 +1,3 @@
-// #include "example/semaphore2.h"
-// #include "example/read_write_channel.h"
 // #include "example/unsigned.h"
 #include "dsal/sort.h"
 // #include "dsal/linked_list.h"
@@ -12,14 +10,14 @@
 int main() {
   using namespace std;
 
-  // test_semaphore2();
   // test_unsigned();
   // test_dispatcher();
   // test_slice();
-  test_insert_sort();
-  test_bubble_sort();
-  test_quick_sort();
-  test_heap_sort();
+  // test_insert_sort();
+  // test_bubble_sort();
+  // test_quick_sort();
+  // test_heap_sort();
+  test_radix_sort();
   // test_singly_list();
   // test_find_max();
   // test_base_conversion();

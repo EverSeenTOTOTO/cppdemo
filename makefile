@@ -34,7 +34,7 @@ clean:
 	@-rm -rf *.{s,i,o,out,a,ll}
 
 # 对每一个.cpp文件替换.cpp为.i，得到cppfiles
-cppfiles = $(patsubst %.cpp,%.i,$(wildcard src/dsal/*.cpp src/*.cpp))
+cppfiles = $(patsubst %.cpp,%.i,$(wildcard src/dsal/*.cpp src/example/*.cpp src/*.cpp))
 
 #### NOT USED BEGIN ####
 

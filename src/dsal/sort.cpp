@@ -159,3 +159,63 @@ void test_heap_sort() {
   heap_sort(clone);
   expect_eq(clone, result, "test heap_sort demo");
 }
+
+template <typename T>
+using listvec = vec<std::list<T>>;
+
+void distribute(vec<int>& s, listvec<int>& v, int r) {
+  auto radix = std::pow(10, r - 1);
+
+  for (auto x : s) {
+    auto num = (int) std::floor((x / radix)) % 10;
+
+    // x < radix can be ignored, except 0 when radix = 1
+    if (num == 0 && x != 0) continue;
+
+    v.at(num).push_back(x);
+  }
+}
+
+// combine individual lists into vec
+bool collect(vec<int>& s, listvec<int>& v) {
+  auto i       = 0;
+  auto changed = false;
+
+  for (auto& l : v) {
+    if (!l.empty()) {
+      changed = true;
+
+      for (auto const& x : l) {
+        s[i++] = x;
+      }
+
+      l.clear();
+    }
+  }
+
+  return changed;
+}
+
+void radix_sort(vec<int>& s) {
+  listvec<int> v(10);  // 0~9
+
+  int radix = 1;
+  while (true) {
+    distribute(s, v, radix++);
+    if (!collect(s, v)) break;
+  }
+}
+
+void test_radix_sort() {
+  using namespace std;
+
+  auto s = range(5, 0);
+
+  radix_sort(s);
+  expect_eq(s, range(1, 6), "test radix_sort");
+
+  auto clone = slice(demo, 0, demo.size());
+
+  radix_sort(clone);
+  expect_eq(clone, result, "test radix_sort demo");
+}

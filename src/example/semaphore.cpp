@@ -4,9 +4,12 @@ Semaphore::Semaphore(int value) : value(value) {}
 
 void Semaphore::P() {
   std::unique_lock<std::mutex> lock(mtx);
-  // Note that lock must be acquired before entering this method, and it is reacquired after
-  // wait(lock) exits, which means that lock can be used to guard access to stop_waiting(). see
-  // https://en.cppreference.com/w/cpp/thread/condition_variable/wait
+  // 相当于：
+  // 1. while (value > 0) {
+  // 2.   unlock();
+  // 3.   lock();
+  // 4. }
+  // 并且要求当进程执行到1和2之间时不会被调度走，要调度也只能在2和3之间
   cv.wait(lock, [this]() { return value > 0; });
   value--;
 }
@@ -18,7 +21,7 @@ void Semaphore::V() {
 }
 
 void test_semaphore() {
-  Semaphore                s(2);
+  Semaphore                s(1);
   std::vector<std::thread> v;
 
   for (auto i = 0; i < 4; ++i) {

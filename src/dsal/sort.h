@@ -18,4 +18,7 @@ void test_quick_sort();
 void heap_sort(vec<int>& s);
 void test_heap_sort();
 
+void radix_sort(vec<int>& s);
+void test_radix_sort();
+
 #endif
