@@ -1,14 +1,15 @@
-# GCC = riscv64-linux-gnu-g++-10
-# CPP = riscv64-linux-gnu-cpp
-# AS = riscv64-linux-gnu-as
-# AR = riscv64-linux-gnu-ar
-# OBJDUMP = riscv64-linux-gnu-objdump
+SHELL := /bin/bash
+GCC = riscv64-linux-gnu-g++-11
+CPP = riscv64-linux-gnu-cpp
+AS = riscv64-linux-gnu-as
+AR = riscv64-linux-gnu-ar
+OBJDUMP = riscv64-linux-gnu-objdump
 
-GCC = g++
-CPP = cpp
-AS = as
-AR = ar
-OBJDUMP = objdump
+# GCC = g++
+# CPP = cpp
+# AS = as
+# AR = ar
+# OBJDUMP = objdump
 
 # GCC = clang++ # see https://bugs.llvm.org/show_bug.cgi?id=52265
 # CPP = clang-cpp
