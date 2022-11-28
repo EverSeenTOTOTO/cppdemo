@@ -13,17 +13,17 @@ void test_btree() {
   expect_eq(a->depth(), 3, "btree.depth()");
   expect_eq(a->node_count(), 4, "breee.node_count()");
 
-  vec<int> pre;
-  vec<int> in;
-  vec<int> post;
+  vec<int> pre, in, post, level;
 
   a->pre_order([&pre](int x) { pre.push_back(x); });
   a->in_order([&in](int x) { in.push_back(x); });
   a->post_order([&post](int x) { post.push_back(x); });
+  a->level_order([&level](int x) { level.push_back(x); });
 
   expect_eq(pre, vec<int>{1, 2, 4, 3}, "btree.pre_order()");
   expect_eq(in, vec<int>{4, 2, 1, 3}, "btree.in_order()");
   expect_eq(post, vec<int>{4, 2, 3, 1}, "btree.post_order()");
+  expect_eq(level, vec<int>{1, 2, 3, 4}, "btree.level_order()");
 
   delete a;
 }
@@ -32,12 +32,25 @@ void test_rebuild_btree() {
   vec<char> in{'B', 'D', 'C', 'E', 'A', 'F', 'H', 'G'};
   vec<char> post{'D', 'E', 'C', 'B', 'H', 'G', 'F', 'A'};
 
-  auto      bt = rebuild_btree(in, post);
-  vec<char> pre;
+  auto bt = rebuild_btree(in, post);
 
+  vec<char> pre;
   bt->pre_order([&pre](char c) { pre.push_back(c); });
 
   expect_eq(pre, vec<char>{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'}, "rebuild_btree");
+
+  delete bt;
+}
+
+void test_rebuild_complete_btree() {
+  vec<int> level{1, 2, 3, 4, 5, 6};
+
+  auto bt = rebuild_complete_btree(level);
+
+  vec<int> l;
+  bt->level_order([&l](int c) { l.push_back(c); });
+
+  expect_eq(l, level, "rebuild_complete_btree");
 
   delete bt;
 }

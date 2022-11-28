@@ -7,6 +7,8 @@
 template <typename T>
 class btree {
  public:
+  using type = T;
+
   btree() = delete;
   btree(T const& t) : data(t) {}
   ~btree() {
@@ -80,6 +82,27 @@ class btree {
 
     cb(data);
   }
+
+  void level_order(callback const& cb) {
+    std::queue<btree<T>*> q;
+
+    q.push(this);
+
+    while (!q.empty()) {
+      auto top = q.front();
+
+      q.pop();
+      cb(top->data);
+
+      if (top->lchild != nullptr) {
+        q.push(top->lchild);
+      }
+
+      if (top->rchild != nullptr) {
+        q.push(top->rchild);
+      }
+    }
+  }
 };
 
 // 根据中序序列和后序序列重建二叉树
@@ -89,25 +112,53 @@ btree<T>* rebuild_btree(vec<T> const& in, vec<T> const& post) {
     throw std::runtime_error("invalid sequence");
   }
 
-  if (post.size() == 0) {
-    return nullptr;
-  } else {
-    auto last     = post.size() - 1;
-    auto rootData = post[last];
-    auto root     = new btree<T>(rootData);
-    auto index    = find_index(in, rootData);
-    auto rcount   = last - index;
+  if (post.size() == 0) return nullptr;
 
-    if (index == -1) {
-      throw std::runtime_error("invalid sequence");
-    }
+  auto last     = post.size() - 1;
+  auto rootData = post[last];
+  auto root     = new btree<T>(rootData);
+  auto index    = find_index(in, rootData);
+  auto rcount   = last - index;
 
-    root->lchild = rebuild_btree(slice(in, 0, index), slice(post, 0, index));
-    root->rchild = rebuild_btree(slice(in, index + 1, rcount), slice(post, index, rcount));
-
-    return root;
+  if (index == -1) {
+    throw std::runtime_error("invalid sequence");
   }
+
+  root->lchild = rebuild_btree(slice(in, 0, index), slice(post, 0, index));
+  root->rchild = rebuild_btree(slice(in, index + 1, rcount), slice(post, index, rcount));
+
+  return root;
 };
+
+// 根据广度优先序列重建完全二叉树
+template <typename T>
+btree<T>* rebuild_complete_btree(vec<T> const& v) {
+  if (v.size() == 0) return nullptr;
+
+  auto i    = 0;
+  auto root = new btree<T>(v[i]);
+
+  std::queue<btree<T>*> q;
+  q.push(root);
+
+  while (i < v.size() - 1) {
+    auto top = q.front();
+
+    if (top->lchild == nullptr) {
+      top->lchild = new btree<T>(v[++i]);
+
+      q.push(top->lchild);
+    } else if (top->rchild == nullptr) {
+      top->rchild = new btree<T>(v[++i]);
+
+      q.push(top->rchild);
+    } else {
+      q.pop();
+    }
+  }
+
+  return root;
+}
 
 template <typename T>
 class huffman_tree : public btree<weighted_data<T>> {
@@ -142,6 +193,7 @@ huffman_tree<T>* build_huffman_tree(vec<huffman_tree<T>*> const& forest) {
 
 void test_btree();
 void test_rebuild_btree();
+void test_rebuild_complete_btree();
 void test_build_huffman_tree();
 
 #endif
