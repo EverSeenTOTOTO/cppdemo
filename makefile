@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 # GCC = riscv64-linux-gnu-g++-10
 # CPP = riscv64-linux-gnu-cpp
 # AS = riscv64-linux-gnu-as
@@ -29,9 +30,9 @@ prepare:
 
 .PHONY: clean
 clean:
-	@-rm -rf src/**/*.{s,i,o,out,a,ll}
-	@-rm -rf src/*.{s,i,o,out,a,ll}
-	@-rm -rf *.{s,i,o,out,a,ll}
+	@-rm -rf src/**/*.{o,s,i,out,a,ll}
+	@-rm -rf src/*.{o,s,i,out,a,ll}
+	@-rm -rf *.{o,s,i,out,a,ll}
 
 # 对每一个.cpp文件替换.cpp为.i，得到cppfiles
 cppfiles = $(patsubst %.cpp,%.i,$(wildcard src/dsal/*.cpp src/example/*.cpp src/*.cpp))
@@ -70,7 +71,7 @@ as: $(objfiles)
 
 # 链接
 .PHONY: build
-build: clean $(objfiles)
+build: $(objfiles)
 	${GCC} ${CPP_FLAGS} -v -Xlinker --warn-common -o main.out $(objfiles)
 	@echo -e '\n\033[1;32m Built main.out. \033[0m'
 
