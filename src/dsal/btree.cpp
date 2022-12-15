@@ -56,7 +56,7 @@ void test_rebuild_complete_btree() {
 }
 
 void test_build_huffman_tree() {
-  auto v = vec<huffman_tree<char>*>{
+  auto v = vec<huffman_tree<char> *>{
       new huffman_tree<char>('a', 7),
       new huffman_tree<char>('b', 5),
       new huffman_tree<char>('c', 2),
@@ -65,4 +65,17 @@ void test_build_huffman_tree() {
   auto t = build_huffman_tree(v);
 
   expect_eq(t->data.weight, 18, "build_huffman_tree");
+
+  v = vec<huffman_tree<char> *>{
+      new huffman_tree<char>('a', 6),  new huffman_tree<char>('b', 3),
+      new huffman_tree<char>('c', 8),  new huffman_tree<char>('d', 2),
+      new huffman_tree<char>('e', 10), new huffman_tree<char>('f', 4),
+  };
+  t = build_huffman_tree(v);
+
+  vec<typename huffman_tree<char>::type::weight_type> l;
+
+  t->level_order([&l](auto x) { l.push_back(x.weight); });
+
+  expect_eq(l, decltype(l){33, 14, 19, 6, 8, 9, 10, 4, 5, 2, 3}, "test build_huffman_tree");
 }
