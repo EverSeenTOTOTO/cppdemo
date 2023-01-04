@@ -1,4 +1,4 @@
-#ifndef LINKED_LIST_H 
+#ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
 #include "../common.h"
@@ -129,6 +129,5 @@ singly_list<int>::list_node* find_max(singly_list<int> const& l);
 
 void test_singly_list();
 void test_find_max();
-
 
 #endif

@@ -2,12 +2,13 @@
 // #include "dsal/sort.h"
 // #include "dsal/linked_list.h"
 // #include "dsal/stack_queue.h"
-#include "dsal/btree.h"
+// #include "dsal/btree.h"
 // #include "dsal/direct_graph.h"
 // #include "dsal/undirect_graph.h"
 // #include "dsal/graph.h"
 // #include "dsal/banker.h"
 // #include "dsal/KMP.h"
+#include "leetcode/double_pointer.h"
 
 int main() {
   using namespace std;
@@ -27,7 +28,7 @@ int main() {
   // test_btree();
   // test_rebuild_complete_btree();
   // test_rebuild_btree();
-  test_build_huffman_tree();
+  // test_build_huffman_tree();
   // test_ol_graph();
   // test_ol_graph_traverse();
   // test_aml_graph();
@@ -41,6 +42,10 @@ int main() {
   // test_banker();
   // test_next_naive();
   // test_next_opt();
+
+  test_detect_circle();
+  test_move_zeros();
+  test_two_sum();
 
   return 0;
 }
