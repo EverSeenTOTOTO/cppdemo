@@ -1,4 +1,4 @@
-#ifndef STACK_QUEUE_H 
+#ifndef STACK_QUEUE_H
 #define STACK_QUEUE_H
 
 #include "../common.h"
@@ -90,6 +90,5 @@ class circular_deque {
 };
 
 void test_circular_deque();
-
 
 #endif

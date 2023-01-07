@@ -175,7 +175,8 @@ huffman_tree<T>* build_huffman_tree(vec<huffman_tree<T>*> const& forest) {
 
   auto clone = slice(forest, 0, forest.size());
 
-  std::sort(clone.begin(), clone.end(), [](auto a, auto b) { return a->data.weight < b->data.weight; });
+  std::sort(clone.begin(), clone.end(),
+            [](auto a, auto b) { return a->data.weight < b->data.weight; });
 
   auto lchild = clone[0];
   auto rchild = clone[1];

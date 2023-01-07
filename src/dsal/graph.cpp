@@ -140,5 +140,6 @@ void test_critical_path() {
 
   std::for_each(paths.begin(), paths.end(), [&](auto e) { edges.insert(e->data.data); });
 
-  expect_eq(edges, std::set<std::string>{"a1", "a4", "a7", "a8", "a10", "a11"}, "test critical_path()");
+  expect_eq(edges, std::set<std::string>{"a1", "a4", "a7", "a8", "a10", "a11"},
+            "test critical_path()");
 }

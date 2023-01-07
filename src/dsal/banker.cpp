@@ -15,10 +15,12 @@ void test_banker() {
 
   uvec total2{1, 1, 2};
 
-  std::map<std::string, std::pair<uvec, uvec>> table2{{"p1", {{1, 0, 0}, {3, 2, 2}}},
-                                                      {"p2", {{5, 1, 1}, {6, 1, 3}}},
-                                                      {"p3", {{2, 1, 1}, {3, 1, 4}}},
-                                                      {"p4", {{0, 0, 2}, {4, 2, 2}}}};
+  std::map<std::string, std::pair<uvec, uvec>> table2{
+      {"p1", {{1, 0, 0}, {3, 2, 2}}},
+      {"p2", {{5, 1, 1}, {6, 1, 3}}},
+      {"p3", {{2, 1, 1}, {3, 1, 4}}},
+      {"p4", {{0, 0, 2}, {4, 2, 2}}}
+  };
 
   auto result2 = banker(table2, total2);
 

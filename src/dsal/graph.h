@@ -113,7 +113,8 @@ std::set<typename waml_graph<V, E>::edge*> const& kruskal_mst(waml_graph<V, E> c
   auto result = new edge_set();
 
   // 对所有边进行排序
-  std::sort(edges.begin(), edges.end(), [](auto a, auto b) { return a->data.weight < b->data.weight; });
+  std::sort(edges.begin(), edges.end(),
+            [](auto a, auto b) { return a->data.weight < b->data.weight; });
 
   std::map<node*, node_set*> components;
 
@@ -151,7 +152,8 @@ std::set<typename waml_graph<V, E>::edge*> const& kruskal_mst(waml_graph<V, E> c
 namespace dsal_impl {
 
   template <typename G>
-  auto get_edge_weight(G const& g, typename G::node* from, typename G::node* to) -> typename G::edge::type::weight_type {
+  auto get_edge_weight(G const& g, typename G::node* from, typename G::node* to) ->
+      typename G::edge::type::weight_type {
     using weight_type = typename G::edge::type::weight_type;
 
     if (to == from) {
@@ -177,7 +179,9 @@ namespace dsal_impl {
 
 // single source shortest path
 template <typename V, typename E>
-auto dijkstra_shortest_path(wol_graph<V, E> const& g, V const& start) -> std::map<typename wol_graph<V, E>::node*, typename wol_graph<V, E>::edge::type::weight_type> const& {
+auto dijkstra_shortest_path(wol_graph<V, E> const& g, V const& start)
+    -> std::map<typename wol_graph<V, E>::node*,
+                typename wol_graph<V, E>::edge::type::weight_type> const& {
   using node        = typename wol_graph<V, E>::node;
   using edge        = typename wol_graph<V, E>::edge;
   using weight_type = typename edge::type::weight_type;
@@ -239,7 +243,9 @@ auto dijkstra_shortest_path(wol_graph<V, E> const& g, V const& start) -> std::ma
 
 // all source shortest path
 template <typename V, typename E>
-auto floyd_shortest_path(wol_graph<V, E> const& g, V const& start) -> std::map<typename wol_graph<V, E>::node*, typename wol_graph<V, E>::edge::type::weight_type> const& {
+auto floyd_shortest_path(wol_graph<V, E> const& g, V const& start)
+    -> std::map<typename wol_graph<V, E>::node*,
+                typename wol_graph<V, E>::edge::type::weight_type> const& {
   using node        = typename wol_graph<V, E>::node;
   using edge        = typename wol_graph<V, E>::edge;
   using weight_type = typename edge::type::weight_type;
@@ -340,7 +346,8 @@ auto topo_sort(ol_graph<V, E> const& g) -> std::list<typename ol_graph<V, E>::no
 
 // critical path
 template <typename V, typename E>
-auto critical_path(wol_graph<V, E, size_t> const& g) -> std::list<typename wol_graph<V, E, size_t>::edge*> const& {
+auto critical_path(wol_graph<V, E, size_t> const& g)
+    -> std::list<typename wol_graph<V, E, size_t>::edge*> const& {
   using event  = typename wol_graph<V, E, size_t>::node;
   using action = typename wol_graph<V, E, size_t>::edge;
 
@@ -361,7 +368,7 @@ auto critical_path(wol_graph<V, E, size_t> const& g) -> std::list<typename wol_g
     //更新依赖evt的事件的最早开始时间
     for (auto e : evt->get_out_edges()) {
       auto maxStartTime = earliestStartTimeOfEvent.at(e->tail);  // 已有的最早开始时间
-      auto startTime    = requiredTime + e->data.weight;         // 此依赖路径导致的最早开始时间
+      auto startTime = requiredTime + e->data.weight;  // 此依赖路径导致的最早开始时间
 
       //后续事件须等待此事件完成
       earliestStartTimeOfEvent.insert_or_assign(e->tail, std::max(maxStartTime, startTime));
@@ -398,8 +405,11 @@ auto critical_path(wol_graph<V, E, size_t> const& g) -> std::list<typename wol_g
 
   for (auto evt : topoSeq) {
     for (auto e : evt->get_out_edges()) {
-      auto earliestStartTime = earliestStartTimeOfEvent.at(evt);                     //活动的最早开始时间等于其前置事件的最早开始时间
-      auto latestStartTime   = latestStartTimeOfEvent.at(e->tail) - e->data.weight;  //活动的最晚开始时间为其后置事件的最晚开始时间减去活动耗时
+      auto earliestStartTime =
+          earliestStartTimeOfEvent.at(evt);  //活动的最早开始时间等于其前置事件的最早开始时间
+      auto latestStartTime =
+          latestStartTimeOfEvent.at(e->tail)
+          - e->data.weight;  //活动的最晚开始时间为其后置事件的最晚开始时间减去活动耗时
 
       if (earliestStartTime == latestStartTime) {  //关键活动
         result->push_back(e);

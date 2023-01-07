@@ -44,12 +44,31 @@ vec<T>& slice(vec<T> const& vec, size_t begin, size_t length) {
   return *v;
 }
 
-template <typename Container>
-inline void display(Container const& v) {
-  using namespace std;
+namespace dsal_impl {
+  // functions cannot be partial specialization
+  template <typename T, typename = void>
+  struct display_helper {
+    void display(T const& any) {
+      std::cout << any << "\t";
+    }
+  };
 
-  for_each(v.begin(), v.end(), [](auto x) { cout << x << "\t"; });
-  cout << endl;
+  template <typename T>
+  struct display_helper<
+      T, std::void_t<decltype(std::declval<T>().begin()), decltype(std::declval<T>().end())>> {
+    void display(T const& v) {
+      display_helper<typename T::value_type> d;
+
+      for_each(v.begin(), v.end(), [&](auto x) { d.display(x); });
+      std::cout << std::endl;
+    }
+  };
+}  // namespace dsal_impl
+
+template <typename T>
+inline void display(T const& t) {
+  dsal_impl::display_helper<T> d;
+  d.display(t);
 }
 
 inline vec<int>& range(int from, int to) {
@@ -66,7 +85,8 @@ template <typename T>
 bool equals_to(vec<T> const& a, vec<T> const& b) {
   if (a.size() != b.size()) return false;
 
-  auto p = std::mismatch(a.begin(), a.end(), b.begin());
+  auto p =
+      std::mismatch(a.begin(), a.end(), b.begin(), [](auto x, auto y) { return equals_to(x, y); });
 
   return p.first == a.end() && p.second == b.end();
 }
@@ -150,7 +170,8 @@ class timer {
   }
 
  private:
-  static inline std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
+  static inline std::chrono::high_resolution_clock::time_point now =
+      std::chrono::high_resolution_clock::now();
 };
 
 inline void expect(bool expr, std::string const& message) {

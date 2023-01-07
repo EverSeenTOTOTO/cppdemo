@@ -77,11 +77,10 @@ struct pow_helper<Lhs, Rhs,
 };
 
 template <typename Lhs, typename Rhs, typename... Args>
-auto invoke(
-    pow_expr<Lhs, Rhs,
-             std::enable_if_t<
-                 !(std::is_base_of_v<expr, Lhs> && std::is_base_of_v<expr, Rhs>)>> const& pow,
-    Args... args) {
+auto invoke(pow_expr<Lhs, Rhs,
+                     std::enable_if_t<!(
+                         std::is_base_of_v<expr, Lhs> && std::is_base_of_v<expr, Rhs>)>> const& pow,
+            Args... args) {
   auto lhs = invoke(pow.lhs, args...);
   auto rhs = invoke(pow.rhs, args...);
 

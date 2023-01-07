@@ -41,10 +41,14 @@ void Dispatcher::prior_writer() {
 void Dispatcher::pr_arrive(Actor* actor) {
   if (actor->is_reader) {
     pending_readers.push(actor);
-    if (!is_writing) { allow_read(); }
+    if (!is_writing) {
+      allow_read();
+    }
   } else {
     pending_writers.push(actor);
-    if (!is_writing && reading_count == 0) { allow_write(); }
+    if (!is_writing && reading_count == 0) {
+      allow_write();
+    }
   }
 }
 
@@ -55,19 +59,27 @@ void Dispatcher::pr_left(Actor* actor) {
     is_writing = false;
 
     // reader prior
-    while (!pending_readers.empty()) { allow_read(); }
+    while (!pending_readers.empty()) {
+      allow_read();
+    }
   }
 
-  if (reading_count == 0) { allow_write(); }
+  if (reading_count == 0) {
+    allow_write();
+  }
 }
 
 void Dispatcher::wr_arrive(Actor* actor) {
   if (actor->is_reader) {
     pending_readers.push(actor);
-    if (!is_writing && pending_writers.empty()) { allow_read(); }
+    if (!is_writing && pending_writers.empty()) {
+      allow_read();
+    }
   } else {
     pending_writers.push(actor);
-    if (!is_writing && reading_count == 0) { allow_write(); }
+    if (!is_writing && reading_count == 0) {
+      allow_write();
+    }
   }
 }
 
@@ -79,10 +91,14 @@ void Dispatcher::wr_left(Actor* actor) {
   }
 
   // 唤醒写者时不是while !empty，写者一次只能唤醒一个
-  if (!pending_writers.empty()) { allow_write(); }
+  if (!pending_writers.empty()) {
+    allow_write();
+  }
 
   if (!is_writing) {
-    while (!pending_readers.empty()) { allow_read(); }
+    while (!pending_readers.empty()) {
+      allow_read();
+    }
   }
 }
 
@@ -138,5 +154,7 @@ void test_dispatcher() {
   threads.emplace_back(std::thread([&]() { w1.run(dispatcher); }));
   threads.emplace_back(std::thread([&]() { w2.run(dispatcher); }));
 
-  for (auto& t : threads) { t.join(); }
+  for (auto& t : threads) {
+    t.join();
+  }
 }

@@ -41,7 +41,9 @@ singly_list<int>::list_node* find_max(singly_list<int> const& l) {
   auto ptr = max;
 
   while (ptr) {
-    if (ptr->data > max->data) { max = ptr; }
+    if (ptr->data > max->data) {
+      max = ptr;
+    }
     ptr = ptr->next;
   }
 

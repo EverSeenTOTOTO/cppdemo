@@ -5,17 +5,17 @@ SHELL := /bin/bash
 # AR = riscv64-linux-gnu-ar
 # OBJDUMP = riscv64-linux-gnu-objdump
 
-GCC = g++
-CPP = cpp
-AS = as
-AR = ar
-OBJDUMP = objdump
+# GCC = g++
+# CPP = cpp
+# AS = as
+# AR = ar
+# OBJDUMP = objdump
 
-# GCC = clang++ # see https://bugs.llvm.org/show_bug.cgi?id=52265
-# CPP = clang-cpp
-# AS = llvm-as
-# AR = llvm-ar
-# OBJDUMP = llvm-objdump
+GCC = clang++ # see https://bugs.llvm.org/show_bug.cgi?id=52265
+CPP = clang-cpp
+AS = llvm-as
+AR = llvm-ar
+OBJDUMP = llvm-objdump
 
 CPP_FLAGS = -g\
 	-O0\
@@ -27,6 +27,10 @@ CPP_FLAGS = -g\
 .PHONY: prepare
 prepare:
 	bear -- make build
+
+.PHONY: lint
+lint:
+	@clang-format -i src/**/*.{h,c,cpp}
 
 .PHONY: clean
 clean:
