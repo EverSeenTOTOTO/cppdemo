@@ -116,7 +116,7 @@ std::set<typename waml_graph<V, E>::edge*> const& kruskal_mst(waml_graph<V, E> c
   std::sort(edges.begin(), edges.end(),
             [](auto a, auto b) { return a->data.weight < b->data.weight; });
 
-  std::map<node*, node_set*> components;
+  hashmap<node*, node_set*> components;
 
   // 初始时每个结点自成分量
   for (auto v : verts) {
@@ -351,8 +351,8 @@ auto critical_path(wol_graph<V, E, size_t> const& g)
   using event  = typename wol_graph<V, E, size_t>::node;
   using action = typename wol_graph<V, E, size_t>::edge;
 
-  std::map<event*, size_t> earliestStartTimeOfEvent;  // 事件最早开始时间
-  std::map<event*, size_t> latestStartTimeOfEvent;    // 事件最迟开始时间
+  hashmap<event*, size_t> earliestStartTimeOfEvent;  // 事件最早开始时间
+  hashmap<event*, size_t> latestStartTimeOfEvent;    // 事件最迟开始时间
 
   auto topoSeq   = topo_sort(g);    // 拓扑序列
   auto lastEvent = topoSeq.back();  // 汇点

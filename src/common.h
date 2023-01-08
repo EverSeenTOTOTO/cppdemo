@@ -11,7 +11,9 @@
 #include <list>
 #include <stack>
 #include <queue>
+#include <unordered_map>
 #include <map>
+#include <unordered_set>
 #include <set>
 #include <regex>
 #include <chrono>
@@ -32,5 +34,8 @@
 
 template <typename T>
 using vec = std::vector<T>;
+
+template <typename K, typename V>
+using hashmap = std::unordered_map<K, V>;
 
 #endif

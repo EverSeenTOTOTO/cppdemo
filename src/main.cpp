@@ -8,8 +8,8 @@
 // #include "dsal/graph.h"
 // #include "dsal/banker.h"
 // #include "dsal/KMP.h"
-// #include "leetcode/double_pointer.h"
-#include "leetcode/backtrace.h"
+#include "leetcode/double_pointer.h"
+// #include "leetcode/backtrace.h"
 
 int main() {
   using namespace std;
@@ -46,13 +46,15 @@ int main() {
 
   // test_detect_circle();
   // test_move_zeros();
-  // test_two_sum();
+  test_two_sum();
+  test_longest_substr();
+  test_shortest_window();
   // test_permute();
   // test_permute_unique();
   // test_subsets();
   // test_subsets_with_dup();
   // test_combination_sum();
-  test_combination_sum_repeat();
+  // test_combination_sum_repeat();
 
   return 0;
 }

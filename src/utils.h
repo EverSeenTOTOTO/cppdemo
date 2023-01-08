@@ -63,6 +63,18 @@ namespace dsal_impl {
       std::cout << std::endl;
     }
   };
+
+  template <typename T1, typename T2>
+  struct display_helper<std::pair<T1, T2>> {
+    void display(std::pair<T1, T2> const& v) {
+      display_helper<T1> d1;
+      display_helper<T2> d2;
+
+      d1.display(v.first);
+      d2.display(v.second);
+      std::cout << std::endl;
+    }
+  };
 }  // namespace dsal_impl
 
 template <typename T>
