@@ -11,7 +11,7 @@ void                               test_detect_circle();
 
 // 移动所有的零到数组末端，快慢指针
 void move_zeros(vec<int>& nums);
-void     test_move_zeros();
+void test_move_zeros();
 
 // 有序数组两数和，滑动窗口
 std::pair<int, int> two_sum(vec<int>& nums, int target);

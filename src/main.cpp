@@ -6,13 +6,13 @@
 // #include "dsal/direct_graph.h"
 // #include "dsal/undirect_graph.h"
 // #include "dsal/graph.h"
-// #include "dsal/banker.h"
 // #include "dsal/KMP.h"
+// #include "dsal/union_find.h"
 #include "leetcode/double_pointer.h"
 // #include "leetcode/backtrace.h"
 
-int main() {
-  using namespace std;
+int main(int argc, char* argv[], char* env[]) {
+  // using namespace std;
 
   // test_unsigned();
   // test_dispatcher();
@@ -40,15 +40,17 @@ int main() {
   // test_floyd_shortest_path();
   // test_topo_sort();
   // test_critical_path();
-  // test_banker();
   // test_next_naive();
   // test_next_opt();
 
+  // test_nums_of_islands_uf();
+  // test_nums_of_islands_dfs();
+
   // test_detect_circle();
   // test_move_zeros();
-  test_two_sum();
+  // test_two_sum();
   test_longest_substr();
-  test_shortest_window();
+  // test_shortest_window();
   // test_permute();
   // test_permute_unique();
   // test_subsets();

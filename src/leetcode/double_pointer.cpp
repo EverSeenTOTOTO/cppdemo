@@ -119,11 +119,12 @@ std::pair<int, int> longest_substr(std::string const& s) {
 
   hashmap<char, size_t> count;
 
-  while (right <= s.size()) {
+  while (true) {
     if (right - left > result->second) {
       result->first  = left;
       result->second = right - left;
     }
+    if (right == s.size()) break;
 
     // 增大窗口
     // if (s.substr(left, right - left).find(s[right]) == std::string::npos) {
