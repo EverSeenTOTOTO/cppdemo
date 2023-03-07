@@ -38,4 +38,5 @@ using vec = std::vector<T>;
 template <typename K, typename V>
 using hashmap = std::unordered_map<K, V>;
 
+using namespace std::chrono_literals;
 #endif

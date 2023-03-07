@@ -91,8 +91,6 @@ vec<vec<int>> permute_unique(vec<int> const& numbers) {
 void test_permute_unique() {
   vec<int> nums{1, 1, 2};
 
-  // display(permute_unique(nums));
-
   expect_eq(permute_unique(nums),
             vec<vec<int>>{
                 vec<int>{1, 1, 2},
@@ -194,8 +192,6 @@ vec<vec<int>> subsets_with_dup(vec<int> const& numbers) {
 void test_subsets_with_dup() {
   vec<int> nums{1, 2, 2, 3};
 
-  // display(subsets_with_dup(nums));
-
   expect_eq(subsets_with_dup(nums),
             vec<vec<int>>{
                 vec<int>{ },
@@ -252,8 +248,6 @@ vec<vec<int>> combination_sum(vec<int> const& candidates, int target) {
 void test_combination_sum() {
   vec<int> candidates{1, 1, 2, 5, 6, 7, 10};
   int      target = 8;
-
-  // display(combination_sum(candidates, target));
 
   expect_eq(combination_sum(candidates, target),
             vec<vec<int>>{

@@ -1,9 +1,4 @@
 SHELL := /bin/bash
-# GCC = riscv64-linux-gnu-g++-10
-# CPP = riscv64-linux-gnu-cpp
-# AS = riscv64-linux-gnu-as
-# AR = riscv64-linux-gnu-ar
-# OBJDUMP = riscv64-linux-gnu-objdump
 
 # GCC = g++
 # CPP = cpp
@@ -30,7 +25,7 @@ prepare:
 
 .PHONY: lint
 lint:
-	@clang-format -i src/**/*.{h,c,cpp}
+	@clang-format src/**/*.{h,cpp} -i
 
 .PHONY: clean
 clean:
@@ -38,13 +33,13 @@ clean:
 	@-rm -rf src/*.{o,s,i,out,a,ll}
 	@-rm -rf *.{o,s,i,out,a,ll}
 
-# 对每一个.cpp文件替换.cpp为.i，得到cppfiles
-cppfiles = $(patsubst %.cpp,%.i,$(wildcard src/dsal/*.cpp src/leetcode/*.cpp src/example/*.cpp src/*.cpp))
-
-#### NOT USED BEGIN ####
+# NOT USED BEGIN
 
 # 预处理
 # 对每一个.i文件，声明它依赖对应的.cpp文件，然后使用预处理命令cpp生成它。$< 代表第一个依赖文件，$@ 会对每一个目标依次执行
+
+# 对每一个.cpp文件替换.cpp为.i，得到cppfiles
+cppfiles = $(patsubst %.cpp,%.i,$(wildcard src/dsal/*.cpp src/leetcode/*.cpp src/example/*.cpp src/*.cpp))
 $(cppfiles): %.i: %.cpp
 	${CPP} $< -o $@
 
@@ -66,7 +61,11 @@ objfiles = $(subst .i,.o,$(cppfiles))
 # $(objfiles): %.o: %.s
 # 	${AS} $< -o $@
 
-#### NOT USED END ####
+# 静态库
+ar:
+	ar rs cppd.a src/example/semaphore.o
+
+# NOT USED END
 
 $(objfiles): %.o: %.cpp
 	${GCC} ${CPP_FLAGS} -c $< -o $@
@@ -82,7 +81,3 @@ build: $(objfiles)
 .PHONY: start
 start: build
 	./main.out
-
-# 静态库
-ar:
-	ar rs cppd.a src/example/semaphore.o

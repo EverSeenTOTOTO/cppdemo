@@ -31,19 +31,19 @@ void test_next_naive() {
   auto p    = "abc";
   auto next = next_naive(p);
 
-  display(next);
+  print(next);
   expect_eq(next, vec<int>{0, 0, 0}, "test_next_naive abc");
 
   p    = "abcdabc";
   next = next_naive(p);
 
-  display(next);
+  print(next);
   expect_eq(next, vec<int>{0, 0, 0, 0, 1, 2, 3}, "test_next_naive abcdabc");
 
   p    = "abcabdddabcabc";
   next = next_opt(p);
 
-  display(next);
+  print(next);
   expect_eq(next, vec<int>{0, 0, 0, 1, 2, 0, 0, 0, 1, 2, 3, 4, 5, 3},
             "test_next_naive abcabdddabcabc");
 
@@ -51,7 +51,7 @@ void test_next_naive() {
   p    = "abaabc";
   next = next_naive(p);
 
-  display(next);
+  print(next);
   expect_eq(next, vec<int>{0, 0, 1, 1, 2, 0}, "test_next_naive abaabc");
 }
 
@@ -81,19 +81,19 @@ void test_next_opt() {
   auto p    = "abc";
   auto next = next_opt(p);
 
-  display(next);
+  print(next);
   expect_eq(next, vec<int>{0, 0, 0}, "test_next_opt abc");
 
   p    = "abcdabc";
   next = next_opt(p);
 
-  display(next);
+  print(next);
   expect_eq(next, vec<int>{0, 0, 0, 0, 1, 2, 3}, "test_next_opt abcdabc");
 
   p    = "abcabdddabcabc";
   next = next_opt(p);
 
-  display(next);
+  print(next);
   expect_eq(next, vec<int>{0, 0, 0, 1, 2, 0, 0, 0, 1, 2, 3, 4, 5, 3},
             "test_next_opt abcabdddabcabc");
 
@@ -101,6 +101,6 @@ void test_next_opt() {
   p    = "abaabc";
   next = next_opt(p);
 
-  display(next);
+  print(next);
   expect_eq(next, vec<int>{0, 0, 1, 1, 2, 0}, "test_next_opt abaabc");
 }

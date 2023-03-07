@@ -8,11 +8,13 @@
 // #include "dsal/graph.h"
 // #include "dsal/KMP.h"
 // #include "dsal/union_find.h"
-#include "leetcode/double_pointer.h"
+// #include "leetcode/double_pointer.h"
 // #include "leetcode/backtrace.h"
 
-int main(int argc, char* argv[], char* env[]) {
-  // using namespace std;
+#include "utils.h"
+
+int main(int argc, char *argv[], char *env[]) {
+  using namespace std;
 
   // test_unsigned();
   // test_dispatcher();
@@ -49,7 +51,7 @@ int main(int argc, char* argv[], char* env[]) {
   // test_detect_circle();
   // test_move_zeros();
   // test_two_sum();
-  test_longest_substr();
+  // test_longest_substr();
   // test_shortest_window();
   // test_permute();
   // test_permute_unique();

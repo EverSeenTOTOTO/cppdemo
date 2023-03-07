@@ -47,40 +47,40 @@ vec<T>& slice(vec<T> const& vec, size_t begin, size_t length) {
 namespace dsal_impl {
   // functions cannot be partial specialization
   template <typename T, typename = void>
-  struct display_helper {
-    void display(T const& any) {
+  struct print_helper {
+    void print(T const& any) {
       std::cout << any << "\t";
     }
   };
 
   template <typename T>
-  struct display_helper<
+  struct print_helper<
       T, std::void_t<decltype(std::declval<T>().begin()), decltype(std::declval<T>().end())>> {
-    void display(T const& v) {
-      display_helper<typename T::value_type> d;
+    void print(T const& v) {
+      print_helper<typename T::value_type> d;
 
-      for_each(v.begin(), v.end(), [&](auto x) { d.display(x); });
+      for_each(v.begin(), v.end(), [&](auto x) { d.print(x); });
       std::cout << std::endl;
     }
   };
 
   template <typename T1, typename T2>
-  struct display_helper<std::pair<T1, T2>> {
-    void display(std::pair<T1, T2> const& v) {
-      display_helper<T1> d1;
-      display_helper<T2> d2;
+  struct print_helper<std::pair<T1, T2>> {
+    void print(std::pair<T1, T2> const& v) {
+      print_helper<T1> d1;
+      print_helper<T2> d2;
 
-      d1.display(v.first);
-      d2.display(v.second);
+      d1.print(v.first);
+      d2.print(v.second);
       std::cout << std::endl;
     }
   };
 }  // namespace dsal_impl
 
 template <typename T>
-inline void display(T const& t) {
-  dsal_impl::display_helper<T> d;
-  d.display(t);
+inline void print(T const& t) {
+  dsal_impl::print_helper<T> d;
+  d.print(t);
 }
 
 inline vec<int>& range(int from, int to) {
