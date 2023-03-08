@@ -75,6 +75,14 @@ namespace dsal_impl {
       std::cout << std::endl;
     }
   };
+
+  template <>
+  struct print_helper<std::string> {
+    void print(std::string const& s) {
+      std::cout << s << "\t";
+    }
+  };
+
 }  // namespace dsal_impl
 
 template <typename T>

@@ -12,12 +12,14 @@
 // #include "leetcode/backtrace.h"
 
 #include "example/coroutine.h"
+#include "utils.h"
 
-int main(int argc, char *argv[], char *env[]) {
+int main(int argc, char* argv[], char* env[]) {
   using namespace std;
 
   // test_setjmp();
-  test_coroutine();
+  // test_coroutine();
+  test_coroutine_nested();
 
   // test_unsigned();
   // test_dispatcher();
